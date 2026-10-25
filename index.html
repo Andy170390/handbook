@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Andy 的手札</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@400;600&display=swap">
+<style>
+/* Layout: a concertina-folded paper brochure on a studio table; each fold is a chapter, clicking one unfolds it into a full-page reader. */
+:root{
+  --studio-a:#ECECEA; --studio-b:#DADAD7; --floor:rgba(24,24,30,.22);
+  --paper:#FBFBFA; --paper-ink:#141416; --paper-mute:#6A6A70; --paper-line:#E2E2DF; --plate:#EDEDEA;
+  --obs:#18181B; --obs-ink:#F3F3F1; --obs-mute:#9B9BA2; --obs-line:#2E2E33; --obs-plate:#242428;
+  --acc-paper:#2340E0; --acc-obs:#8796FF; --crease:rgba(0,0,0,.07); --hint:#5F5F66;
+  --display:"Archivo","Noto Sans TC","PingFang TC",system-ui,sans-serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --mono:"IBM Plex Mono","Noto Sans TC",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --studio-a:#1B1B1E; --studio-b:#0D0D0F; --floor:rgba(0,0,0,.7);
+  --paper:#E8E8E4; --paper-ink:#121214; --paper-mute:#5E5E64; --paper-line:#D2D2CE; --plate:#DCDCD8;
+  --obs:#1E1E22; --obs-ink:#F0F0EE; --obs-mute:#9A9AA1; --obs-line:#35353B; --obs-plate:#2A2A2F;
+  --acc-paper:#2238C8; --acc-obs:#8C9BFF; --crease:rgba(0,0,0,.18); --hint:#8E8E95; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --studio-a:#1B1B1E; --studio-b:#0D0D0F; --floor:rgba(0,0,0,.7);
+  --paper:#E8E8E4; --paper-ink:#121214; --paper-mute:#5E5E64; --paper-line:#D2D2CE; --plate:#DCDCD8;
+  --obs:#1E1E22; --obs-ink:#F0F0EE; --obs-mute:#9A9AA1; --obs-line:#35353B; --obs-plate:#2A2A2F;
+  --acc-paper:#2238C8; --acc-obs:#8C9BFF; --crease:rgba(0,0,0,.18); --hint:#8E8E95; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--studio-b);color:var(--paper-ink);font-family:var(--sans);overflow:hidden;padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--acc-paper);outline-offset:3px}
+
+.tone[data-tone="light"]{--p-bg:var(--paper);--p-ink:var(--paper-ink);--p-mute:var(--paper-mute);--p-line:var(--paper-line);--pl-bg:var(--plate);--pl-ink:var(--paper-ink);--pl-mute:var(--paper-mute);--p-acc:var(--acc-paper);--shade:linear-gradient(to right,rgba(0,0,0,.17),rgba(0,0,0,.03))}
+.tone[data-tone="dark"]{--p-bg:var(--obs);--p-ink:var(--obs-ink);--p-mute:var(--obs-mute);--p-line:var(--obs-line);--pl-bg:var(--obs-plate);--pl-ink:var(--obs-ink);--pl-mute:var(--obs-mute);--p-acc:var(--acc-obs);--shade:linear-gradient(to right,rgba(0,0,0,.45),rgba(0,0,0,.1))}
+
+/* ---------- overview stage ---------- */
+.stage{position:fixed;inset:0;background:linear-gradient(to bottom,var(--studio-a),var(--studio-b));overflow:hidden}
+.scene{position:absolute;inset:0;perspective:2200px;perspective-origin:50% 45%}
+.fold{position:absolute;left:50%;top:48%;width:0;height:0;transform-style:preserve-3d}
+.floor{position:absolute;left:50%;transform:translateX(-50%);height:90px;background:radial-gradient(ellipse at center,var(--floor),transparent 68%);pointer-events:none;filter:blur(6px)}
+.hint{position:absolute;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom,0px));text-align:center;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--hint)}
+
+.panel{position:absolute;left:0;top:0;transform-origin:0 50%;backface-visibility:hidden;background:var(--p-bg);color:var(--p-ink);display:flex;flex-direction:column;overflow:hidden;box-shadow:inset 1px 0 0 var(--crease)}
+.shade{position:absolute;inset:0;background:var(--shade);pointer-events:none;z-index:3;opacity:0}
+.panel.chapter{cursor:none}
+@media (hover:none){.panel.chapter{cursor:pointer}}
+
+.cover{padding:40px 34px 34px}
+.cover .name{font:800 92px/.86 var(--display);font-stretch:68%;letter-spacing:-.025em;margin:0}
+.cover .role{font:500 17px/1.45 var(--sans);margin:26px 0 0;max-width:15em}
+.cover .bio{margin-top:auto;font:400 14px/1.75 var(--sans);color:var(--p-mute);max-width:21em}
+.cover .foot{margin-top:auto;display:flex;justify-content:space-between;font:500 12px var(--mono);letter-spacing:.04em}
+
+.zone-top{height:55%;padding:16px 16px 0;display:flex;flex-direction:column;position:relative}
+.badge{align-self:flex-start;font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--p-line);padding:4px 6px;color:var(--p-mute)}
+.plate-slot{flex:1;display:flex;align-items:center}
+.plate{width:100%;aspect-ratio:3/4;max-width:100%;background:var(--pl-bg);box-shadow:0 2px 4px rgba(0,0,0,.08),0 10px 22px -10px rgba(0,0,0,.28);transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;overflow:hidden}
+.plate svg,.hero-plate svg,.ghost svg{display:block;width:100%;height:100%}
+.panel.is-hot .plate{transform:translateY(-6px);box-shadow:0 4px 8px rgba(0,0,0,.1),0 22px 34px -12px rgba(0,0,0,.38)}
+.zone-bottom{height:45%;padding:22px 16px 16px;display:flex;flex-direction:column}
+.zone-bottom h3{font:700 22px/1.3 var(--sans);letter-spacing:-.01em;margin:0 0 10px;text-wrap:balance}
+.zone-bottom p{font:400 13px/1.75 var(--sans);opacity:.75;margin:0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.fold.narrow .zone-top{padding:12px 12px 0}
+.fold.narrow .zone-bottom{padding:16px 12px 12px}
+.fold.narrow .zone-bottom h3{font-size:18px}
+.fold.narrow .zone-bottom p{font-size:12px;-webkit-line-clamp:3}
+.fold.narrow .pmeta{flex-direction:column;gap:3px}
+.pmeta{margin-top:auto;display:flex;justify-content:space-between;gap:8px;font:500 10.5px var(--mono);letter-spacing:.04em;color:var(--p-mute)}
+
+.index{padding:34px 26px 24px}
+.ihead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--p-ink);padding-bottom:12px}
+.ihead h2{font:800 44px/1 var(--display);font-stretch:66%;margin:0;letter-spacing:-.02em}
+.ihead span{font:500 11px var(--mono);color:var(--p-mute)}
+.ilist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.ilist li{border-bottom:1px solid var(--p-line)}
+.ient{display:grid;gap:5px;padding:15px 0;width:100%;text-align:left}
+.ient .row{display:flex;justify-content:space-between;font:500 10.5px var(--mono);letter-spacing:.04em;color:var(--p-mute)}
+.ient b{font:700 16px/1.35 var(--sans)}
+.ient small{font:400 12.5px/1.6 var(--sans);color:var(--p-mute)}
+button.ient:hover b{text-decoration:underline;text-underline-offset:4px}
+.tag-pending{color:var(--p-acc)}
+.trow{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:baseline;width:100%;text-align:left;padding:9px 0}
+.trow .tn,.trow .tr{font:500 10.5px var(--mono);letter-spacing:.04em;color:var(--p-mute)}
+.trow .tr.tag-pending{color:var(--p-acc)}
+.trow .tt{font:700 14px/1.3 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trow:hover .tt{text-decoration:underline;text-underline-offset:3px}
+.ifoot{margin-top:auto;padding-top:14px;font:500 11px var(--mono);color:var(--p-mute)}
+
+.cursor{position:fixed;left:0;top:0;z-index:50;pointer-events:none;font:500 11px/1 var(--mono);letter-spacing:.08em;background:var(--paper-ink);color:var(--paper);padding:8px 10px;border-radius:999px;opacity:0;transition:opacity .2s;white-space:nowrap}
+.cursor.on{opacity:1}
+
+/* ---------- transition layers ---------- */
+.expander{position:fixed;inset:0;z-index:25;background:var(--p-bg)}
+.ghost{position:fixed;z-index:40;overflow:hidden;background:var(--pl-bg);box-shadow:0 18px 40px -16px rgba(0,0,0,.35)}
+
+/* ---------- reader ---------- */
+.reader{position:fixed;inset:0;z-index:30;overflow-y:auto;background:var(--p-bg);color:var(--p-ink);-webkit-overflow-scrolling:touch}
+.reader.entering{background:transparent}
+.reader.entering .rhead,.reader.entering .rhero,.reader.entering .body,.reader.entering .pn{opacity:0}
+.reader.entering .hero-plate{visibility:hidden}
+.rhead,.rhero,.body,.pn{transition:opacity .45s ease}
+.rhead{position:sticky;top:0;z-index:2;background:var(--p-bg);display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:18px;align-items:center;padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--p-line)}
+.rhead .back{font:500 12px var(--mono);letter-spacing:.04em;padding:6px 0}
+.rhead .back:hover{color:var(--p-acc)}
+.rno{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--p-mute)}
+.rtitle{font:700 14px var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.progress{position:absolute;left:0;right:0;bottom:-1px;height:2px}
+.progress i{display:block;height:100%;width:0;background:var(--p-acc)}
+.rinner{max-width:1040px;margin:0 auto;padding-block:64px 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.rhero{display:grid;gap:14px;max-width:46rem}
+.eyebrow{font:500 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--p-mute);margin:0}
+.rhero h1{font:900 clamp(36px,5.6vw,60px)/1.12 var(--sans);letter-spacing:-.02em;margin:0;text-wrap:balance}
+.rhero .sub{font:400 20px/1.6 var(--serif);color:var(--p-mute);margin:0}
+.rhero .meta{font:500 12px var(--mono);color:var(--p-mute);margin:6px 0 0;display:flex;gap:18px;flex-wrap:wrap}
+.hero-plate{margin:44px 0 0;width:100%;max-width:100%;aspect-ratio:3/2;background:var(--pl-bg);overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08),0 24px 48px -24px rgba(0,0,0,.35)}
+.hero-cap{font:500 11px var(--mono);color:var(--p-mute);margin:10px 0 0;letter-spacing:.04em}
+.body{max-width:36em;margin:64px auto 0;font:400 18px/1.95 var(--serif);display:flex;flex-direction:column;gap:1.1em}
+.body p{margin:0}
+.body h2{font:700 24px/1.4 var(--sans);margin:1.6em 0 .1em;letter-spacing:-.01em;text-wrap:balance}
+.body h2:first-child{margin-top:0}
+.body .d{font:500 .78em var(--mono);letter-spacing:.03em;padding:.1em .4em;margin-right:.35em;border:1px solid var(--p-line);white-space:nowrap}
+.pq{margin:1.2em 0;padding:20px 0 0;border-top:2px solid var(--p-ink)}
+.pq p{font:700 clamp(22px,2.6vw,28px)/1.55 var(--sans);letter-spacing:-.01em;text-wrap:balance}
+.body ol{margin:0;padding-left:1.4em;display:grid;gap:.4em}
+.note{border:1px dashed var(--p-line);padding:16px 18px;font:400 15px/1.8 var(--sans)}
+.note span{display:block;font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--p-acc);margin-bottom:6px}
+.pn{max-width:46rem;margin:96px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pncard{border:1px solid var(--p-line);padding:20px;text-align:left;display:grid;gap:6px;min-width:0}
+.pncard:hover{border-color:var(--p-ink)}
+.pncard.next{text-align:right}
+.pncard span{font:500 11px var(--mono);letter-spacing:.08em;color:var(--p-mute)}
+.pncard b{font:700 18px/1.4 var(--sans)}
+.pncard[disabled]{visibility:hidden}
+.collapse{grid-column:1/-1;justify-self:center;margin-top:28px;font:500 12px var(--mono);letter-spacing:.06em;border:1px solid var(--p-ink);padding:11px 18px;border-radius:999px}
+.collapse:hover{background:var(--p-ink);color:var(--p-bg)}
+
+/* svg plate vocabulary */
+.s-bg{fill:var(--pl-bg)}
+.s-ink{fill:var(--pl-ink)}
+.s-mute{fill:var(--pl-mute);opacity:.55}
+.s-acc{fill:var(--p-acc)}
+.s-line{stroke:var(--pl-ink);fill:none;stroke-width:1.4}
+.s-hair{stroke:var(--pl-mute);fill:none;stroke-width:1;opacity:.6}
+.s-accl{stroke:var(--p-acc);fill:none;stroke-width:2}
+.s-ring{fill:none;stroke:var(--pl-mute);stroke-width:1.2;opacity:.7}
+.s-d1{fill:var(--pl-ink);opacity:.13}.s-d2{fill:var(--pl-ink);opacity:.36}.s-d3{fill:var(--pl-ink);opacity:.74}
+.s-acr{fill:var(--p-acc);fill-opacity:.14;stroke:var(--p-acc);stroke-width:1.5}
+.s-t{font:500 11px var(--mono);fill:var(--pl-mute);letter-spacing:.04em}
+.s-tk{font:500 11px var(--mono);fill:var(--pl-ink)}
+.s-ta{font:500 11px var(--mono);fill:var(--p-acc)}
+.s-ti{font:500 10px var(--mono);fill:var(--pl-bg)}
+.s-big{font:800 36px var(--display);font-stretch:68%;fill:var(--pl-ink)}
+.s-huge{font:900 66px var(--sans);fill:var(--pl-ink)}
+
+/* ---------- phone: stacked deck ---------- */
+@media (max-width:767px){
+  body{overflow:auto}
+  .stage{overflow-y:auto}
+  .scene{position:static;perspective:none;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  .fold{position:static;transform:none!important;width:auto;height:auto;display:flex;flex-direction:column;gap:14px}
+  .panel{position:relative;transform:none!important;width:auto!important;height:auto!important;box-shadow:0 1px 2px rgba(0,0,0,.06),0 14px 30px -18px rgba(0,0,0,.35)}
+  .shade,.floor,.cursor{display:none}
+  .hint{position:static;padding:4px 0 24px}
+  .cover{padding:28px 22px}
+  .cover .name{font-size:72px}
+  .cover .bio{margin-top:28px}
+  .zone-top,.zone-bottom{height:auto}
+  .zone-top{padding:16px 16px 0}
+  .plate{aspect-ratio:4/3;margin-top:12px}
+  .zone-bottom{padding:18px 16px 16px;gap:0}
+  .zone-bottom p{-webkit-line-clamp:3;margin-bottom:16px}
+  .index{padding:26px 20px}
+  .rhead{grid-template-columns:auto minmax(0,1fr)}
+  .rno{display:none}
+  .rinner{padding-block:40px 72px}
+  .body{font-size:17px;margin-top:44px}
+  .pn{grid-template-columns:1fr}
+  .pncard.next{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="scene" id="scene">
+    <div class="fold" id="fold"></div>
+    <div class="floor" id="floor"></div>
+    <p class="hint">點選任一折頁閱讀 · Esc 折回</p>
+  </div>
+</div>
+<div class="cursor" id="cursor" aria-hidden="true">閱讀這章 →</div>
+<div class="expander tone" id="expander" hidden></div>
+<div class="ghost tone" id="ghost" hidden></div>
+<div class="reader tone" id="reader" hidden role="dialog" aria-modal="true" aria-labelledby="rh1">
+  <header class="rhead">
+    <button class="back" id="back">← 折回目錄</button>
+    <span class="rno" id="rno"></span>
+    <span class="rtitle" id="rtitle"></span>
+    <div class="progress"><i id="bar"></i></div>
+  </header>
+  <div class="rinner" id="rinner"></div>
+</div>
+
+<script>
+/* ================= content: Andy 的手札 ================= */
+const RAW = [
+{id:"ch1",no:"01",tone:"light",plate:"exam",title:"考研究所這個決定",sub:"仔細想想，好像是從考研究所這個決定開始的。",excerpt:"大學四年辦了二十幾個活動，寫在 CV 上卻壓根沒競爭力。於是我沒想太多，就去考研究所了。",date:"2022.03 – 2023.08",place:"淡水 · 北車",cap:"大碩模擬考答案卡；07:00 的鬧鐘，與 8 月 8 日那通備取電話。",blocks:[
+`h:淡江大三決定考研`,
+`大學四年都在淡江的我，花了很多時間辦了很多活動，大一到大三，返鄉服務隊、營隊、學生會、校友會、TEDx、活動企劃師？、影響力競賽？等等現在回頭看都不會想做的事，加起來超過20個大大小小的活動，也打了不少麻將跟德撲（很多）。`,
+`在辦活動層面，雖然是妥妥的活動猴子，但老實說這讓文組的我在軟實力上有所成長。從求職上來看，這些經歷寫在CV上壓根沒競爭力，除非家裡有礦或有人脈有人介紹工作，選項除了考穩定的公職，似乎就只剩考研究所（因為那時候也沒什麼對於工作的方向）。於是我就沒想太多的去考研究所，並報考商學相關的，像是企管、經濟或是財金研究所的學科補習班，就來到大碩了。`,
+`在大碩這段期間，印象中是在2022年的過年後，大概三月的春季班去補習的。補習班在北車，從淡水租屋處要先搭公車到淡水捷運站，到北車要花快40分鐘到1小時吧印象中，回想起來真的超累，可惜瑋鈞（大學室友）是報名經研所，老師不一樣所以那時很難一起去上課QQ。`,
+`第一次到補習班第一堂課，我旁邊似乎就是坐譚寶，因為我當時沒拿到一本講義而聊起來，然後我們就一起當了好戰友，然後在不知道第幾天就在大碩樓下遇到瑋翰（大三上一起在TED辦活動的齁咪），又有好戰友了。接下來就一路備考，一起借學生證去圖書館讀書還要開討論室、一起租irent去補習、一起考模擬考然後考爆一起哭、一起苦中作樂。`,
+`只能說，幹真的好難受、很Emo、會一直心力憔悴，覺得自己怎麼讀都讀不起來的那種，對我來說讀贏別人真的好難，會讓我想到我高中大學都一直讀結果都落榜的事，害我信心崩潰。讀到甚至幾個月沒回家，過年也只回去吃一個晚上年夜飯就回去淡水讀書。回想起那段時光，真的很謝謝有一群一起努力的人，讓我撐過這段痛苦時光。`,
+`每個考生都很辛苦，犧牲很多，就是從一群辛苦與痛苦的人當中那幾%的人前進頂大。當時也沒有什麼多厲害的思維模式，就是一個目標，想盡辦法把分數拉高，但我到現在還是覺得我很不會考試== 可能就是沒找到方法吧。`,
+`2023年2月，考完試了，終於可以不用設早上7點的起床鬧鐘，起床的感覺是真的很不真實，睜開眼睛，真不敢相信結束了。但悲慘的是，直到最後，2月考完試到8月以前，這半年我都沒有錄取任何一間學校，直到8月8日中興大學打給我，說我是最後一個備取錄取的（還是倒數第二個我忘了），那時候我是在書桌上接到電話的，因為我在準備重考幹。`,
+`最後，我接下了這個錄取通知，但是還是有點不甘心，有種我拿到了一個最不好的選擇的感覺，因為中興在台灣商管類研究所的競爭力客觀數據來說很低，老實說我也不敢再拼重考一年，我自認這過程太痛苦了，我不會想再經歷一次。也是因為這樣，我一直都覺得自己很不聰明，就像之前DAC的Founder Bryant說的，聰明的人大學就會進入台清交成政了。`,
+`q:但我也在那刻發現，我碩士這兩年一定要拼死拼活的卷，才能夠做出超越這爛學店價值的成績。`,
+`h:考完研的耍廢時光`,
+`2023年2月13日，我跟瑋鈞考完最後一間，直接去台北一間叫Posino Taipei的賭場特色酒吧喝爛超爽，還打21點跟百家，這就是自由的味道。接下來的生活大概就是打戰棋打到死，瑋鈞直接把電腦搬來我房間開扁，我記得俊佑在考試的樣子。`,
+`然後大概從這時候開始到畢業，隨便要去哪就去哪，去大旭地瘋狂打麻將跟德撲開始扁，可以打麻將打完打德撲、去動物園？去夜衝陽明山、去草山夜未眠再去邀月？再去吃一蘭、再去唐吉柯德、再去內湖吃壽司郎、或是瘋狂去星聚點跟17play（這種事多到我不太記得是不是同一次，但順序排列組合怎麼排都是正常的，時間不是重點），還超有病自己做了一個德撲桌，或是二話不說就去白沙灣之類的，但這可能是我人生中最瘋的一段時間操。`,
+`3月4日，跟陽光國小的大家去宜蘭看卡皮扒拉，然後一起包棟煮飯，調酒什麼的，我完全忘記喝酒的畫面，然後醉到差點吐，站了一個晚上==`,
+`4月3日，跟搭啦去台南，媽的熱死第二次一起去漁光島，去了一個酒吧叫做依舊室真的很讚，去了美術館再復刻一張之前的畢業照只是換人穿畢業服，去吃牛肉湯、碗糕、卷尾家很多東西。`,
+`4月5日，台南結束後接著去南投找資工的大家住包棟，烤肉烤到砧板融化，晚上坐在外面聊天被蚊子叮爛，把調酒移到室內玩遊戲，隔天等錢哥開車來爆砸他水球、一起拍畢業照、然後再去台中住在大通舖，再殺去九份拍畢業照，民宿房間還有附早餐可以搬到陽台吃，有夠chill，馬的一直飛來飛去，但說走就走真的太屌了。`,
+`6月3日，這天畢業典禮，前一天半夜跟資工的大家坐在淡水老街，雅晴還準備花，大家圍成一個圈聊天，這是大學期間最後一次大家聚在一起拍照。畢業典禮，謝謝搭拉來送我花，特別美麗。`,
+`6月18日再跟陽光國小去台南包棟，騎車吃冰淇凌一直滴啊幹，六個人一開始點一碗豬心冬粉差點被老闆埋了，還要吃魚皮湯、鱔魚意麵、牛肉湯，再去一次漁光島還有等超久的居酒屋。要回程時先去吃無名米糕，再去咖啡廳，超燙美式給我用沒把手的玻璃杯裝我人差點炸掉。`,
+`6月25日跟泡泡浴（冷靜只是群組名）的大家去東京再去大阪再去京都，瘋狂喝飲料當糖尿人，六歌仙、鳥貴族、今半壽喜燒、晚肉與米、去川越吃鰻魚飯、阿夫利、蕎麥麵啊太多了，去晴空塔、Shibuya sky，買一堆年輪蛋糕，逛原宿逛到決定不去江之島。但玩10天玩到到破病很可悲，但出去玩總要開心。`,
+`7月29日跟大學最好的有約的大家去小琉球（沒舜瑩很哭），先去俊佑家住，吃豬腳飯跟土魠魚羹，吃完去KTV唱一大堆新說唱跟有嘻哈的歌，唱到太嗨胃超痛當完直接吃胃藥躺平，隔天去小琉球玩水玩爆，騎車去夜遊，第一次體驗水肺潛水，跟海龜合照。`,
+`8月12日陽光國小尖石露營，嘉祥剃頭趴，啊下大雨是怎啊，還好隔天好天氣，打水彈不知道在打什麼洨，但睡那個帳棚應該不會有第二次。`
+]},
+{id:"ch2",no:"02",tone:"dark",plate:"tree",title:"清大管顧社",sub:"最重要的選擇。Hahow 與 H2U，兩個專案、一群一輩子的朋友。",excerpt:"自卑的我自認全場都是清交的高材生，跟我這個私校考上中字輩洗碩仔的差距極大。但還是埋頭下去做了履歷。",date:"2023.08 – 2024.08",place:"新竹",cap:"Hahow 專案的 issue tree：用戶數成長 120% 要拆到 MECE。",blocks:[
+`h:申請到面試——人生第一場面試`,
+`接下了中興錄取通知後，我當下第一個想法是要去加入管理顧問社。自己當初也沒有覺得會因為加入管顧社變的很厲害，只希望自己更厲害能爭取更多機會。有加管顧這想法的原因是因為在準備研究所期間，不時會有一些學長姐像是台大商研國企或是政大企研的，來灌輸我們考上研究所後的樣態或如何保持職涯競爭力的方式等等。這東西我大學根本不知道，是一個全新的競爭生態，很明顯是私校沒有的。`,
+`而當時的我很幸運的，清大的管顧社竟然在準備招募，而台政的都已經截止了，我就很期待又怕受傷害的去聽說明會，我應該是全場最緊張的那個，因為當時自卑的我自認全場都是清交的高材生，跟我這個私校考上中字輩洗碩仔的差距極大，充滿著不自信。但還是埋頭下去做了履歷（放一些過去活動的經歷，當時的我還覺得還好有很多東西可以寫，不然我履歷就是一片空白），進了書審的我非常開心，接下來就是準備個人面試跟團體面試。`,
+`2023年8月31日的個人面試，個人面試就是一些 behavior questions，但我當時也是很認真擠出一些之前的故事。9月10日團面，而團面因為搞不懂 issue tree 要怎麼拆痛苦一個禮拜，還很認真的把 GoGet 上面再解 case 的資料研讀＋做筆記（我記得是例子是輪胎的 case），很擔心自己表現不好。`,
+`到了團面那天，我記得題目是「推估50嵐在台北市一個禮拜的銷售數量」？幹有點忘記反正跟手搖杯有關，然後30還40分鐘結束後報告。而且有8到9個幹部看我們4個人解，真的很緊張，解 case 時又被一個交大電機哥硬控，講一堆，最後受不了我跟大家討論後在旁邊解另一個版本。甚至擔心到個面跟團面結束我都在30分鐘內給管顧社寄感謝信（2年後我跟乃睿在台積館前，他用社團帳號幫我查到這封感謝信，我們都覺得很好笑）（印象很深刻我爸媽來清大載我去吃翰林茶館，我還在那邊寫mail），但最後整組都有上，當時的我是非常開心的。`,
+`h:Hahow 實體專案——how 累喔`,
+`時間來到2023年9月17日，進入了最重要的專案 Kick off。回想起來很白痴，我那時候穿西裝打領帶穿皮鞋梳油頭我記得，靠北啊阿怎麼大家都這麼隨意，不對是我太緊張了，害李孟玹第一次見到我就覺得這人是三小啊神經病，但也是確實好笑。當天是第一次跟 Hahow 專案的大家見面，我似乎也是全場唯一第一順位選 Hahow 專案的，原因是因為當時被 mentor Leo 的卷卷經歷深深吸引住。當天見到 Effy、Coco、Katherine（當時在結膜炎）、Cathy、Daphne，還有 Mentors Michael、Leo、Joshua 大哥，這些人都是我的貴人也是同甘共苦的好朋友，沒有他們絕對沒有現在的我。接著就馬上開始了專案，專案題目是讓 Hahow 收購用戶數成長 120%，專案期間是大概四個月。`,
+`凱西帶著我們做安心許多，我也忘記我為什麼會接了 PM，但是推自己一把是最正確的決定。一開始的我很擔心自己會給大家造成麻煩，就像前面說的一樣，心裡會想這些人可都是學測四科考了快滿級的人啊這種感覺。缺乏信心的我花了很多時間去想辦法把事情做好，花了很多時間去跟大家溝通（當初跟每個人打的長文還會被拿出來笑），或是請教凱西怎麼做（謝謝凱西還願意拉時間跟我 1 on 1 或是找在政大的學長跟我們做 coaching session，傳授給我們之前做專案的經驗，我由衷地感激），也希望大家能更有向心力，都會私底下關心組員的想法或是當個拉拉隊。因為之前的活動讓我很明白這種沒有薪水的社團，這個經歷一定要讓參與的人覺得投入有價值。`,
+`第一次接觸何謂 Problem Solving，發現問題、拆解到質量化的步驟，會開始問 Is it true? Why so? So what? 這拆的有沒有 MECE？何謂好的 Hypo？如何抱持批判性思考，透過邏輯思考找框架，同時用假說思考快速找到問題方向，我深刻記得這是 Leo 教我們的。但一開始我是完全沒懂，到現在我覺得也一知半解，但也就是因為這樣，專案帶給我的學習多更多。`,
+`2023年11月5日，這是 first review，我記得是我跟 Effy 報告。我記得在這之前我們有去交大化學館？的其中一間教室去做設計思考，因為 Daphne 有經驗就帶著我們用便利貼分客群，挺新鮮也挺好玩的。`,
+`2023年11月25日，這天社課結束就去巨城為了過聖誕節？因為 Effy 沒去過巨城啊，拍了很多照，提前過聖誕節。`,
+`2023年12月10日，隔天 Second Review，這天晚上直接在 Effy 家做簡報做到快四點嗎，隔天一起搭捷運去市政府租小樹屋。`,
+`2024年1月14日，Final Review，印象其實沒有很多，比較多的是滿滿的不真實，「原來今天就是專案結束嗎？」其實挺感性的，很多事情就是這樣累到靠北你不會想再做，但你真要說還是會捨不得跟這群人一起努力的過程。當天清大還停電，原來是變電箱爆炸。結束後拍個照我們就去吃菜園，然後再去一間酒吧叫 inBush 喝酒，後來想想跟 mentors 一群喝酒怪尷尬的。就這樣，結束了 Hahow 專案。`,
+`q:雖然專案結束了，但我們的友情是一輩子的。`,
+`專案這快四個月，過程中熬了無數的夜，凌晨3點開完會，早上8點又接著另一個用戶訪談，為了苦中作樂還說要不要幫對方叫早餐，結果還真的挺好玩的，有一堆歡笑也有紛爭，但一定會有問題不斷產生，如何快速反應與解決才是最重要的。一起畫 issue tree，一起做簡報，一起去社課、一起在開會的時候耍白痴（唱歌是被逼的）（惡整 mentors）、一起慶生、一起過聖誕節、第二次 review 前去 Effy 家修簡報修到快天亮，結束還要去大巨蛋溜冰、跨年還在發問卷生氣、一起累到死、一起抱怨跟生氣（感覺大家做質化訪談的時候是最痛苦的，我邀我叔叔來訪談結果把他們氣炸）（現在回想起來好氣又好笑）。`,
+`但也是因為這些種種，這經歷的 upside 不只是寫在 CV 上增加了價值，更是讓我們的成長曲線陡峭、有了更敏銳的商業邏輯、解決問題、簡報視覺呈現或是專案管理能力都顯著提升（不敢說簡報是我的強項，但真的有在找工作上變成我的武器），還有更重要的是一起奮鬥的革命情感，讓我們到現在都可以互相扶持，我永遠不會忘記。`,
+`h:H2U 實體專案——AAL 誕生`,
+`2024年3月2號，實體專案 Kick-off，印象很深刻是在教育館老地方。我跟 Aiden（當時還叫 Andy）在上學期讀書會就認識，我們還一起去台北羅技企業參訪，然後還一起在遊覽車上畫 deck 好可悲，那天也是第一次跟盧恩打招呼（當初就覺得這人也太開朗了吧，根本是顆開心果），那時候 Aiden 是 naked protein 專案，盧恩是 google 專案。扯遠了，但我也不知道什麼時候我們三個變的特別好，完全忘記，但這兩個人讓我學到很多，沒有他們也沒有現在的我。`,
+`專案目標，是幫 H2U 的 App 健行筆記想出一個可重複性的商業模式，以及每個階段的開發路線圖。業主是 COO Larry，Ex-McKinsey 待8年而且是 EM 這個職位⋯ mentor 也不遑多讓，是熟悉的 Leo Su 我大哥 AKA 超級實習獵人＋神山 CPO 戰士，專案助教是 Joey 跟 Willy，成員有 Aiden、Luanne、Ian、Melody、子瑜還有我。`,
+`因為有了虛擬專案的經驗，大家更懂得如何開始一個專案，更像是複習之前學習的東西並且再優化，一樣的從釐清專案產品背景、競品分析跟 issue tree、CJM、假說、訪談等等。每次跟 Larry 開會他好像都在吃蘋果或聽到他小孩的聲音，但我們都挺緊張的樣子，畢竟對他來說我們確實是小朋友。`,
+`如火如荼的同時，也不忘苦中作樂，但真的挺好玩的。3月23日，我們為了測試健行筆記跟其他登山競品，跑去走十八尖山，跟一群大媽大哥一起走。謝謝乃睿那天還送我 miniGT 的 pagani 模型車當作生日禮物，我記得很清楚很感動。然後吃完璽子牛肉麵下午一起回去清大上 Howard 的面試課，這感覺就像大學生一樣，真的很讓人開心。`,
+`接下來就是不停的開會，但是時間管理變好了，熬夜問題有改善（有點像熬到3點變成1點）。不知道為什麼好像我跟 Aiden 很常約去新竹做簡報，有點忘記，去墨咖啡的樣子。大家感情也因為專案越來越好，Leo 跟我們開會都會講笑話，很難笑。5月25日上完社課的 team building 跑去新竹好樂迪唱歌再去吃好吃合菜，只能靠吃填補心靈。`,
+`6月17日 Final review 前，我跟 Aiden 還有 Ian 跑去 H2U 的公司附近住一個旅館，然後他媽的根本沒睡覺，做簡報做到天亮，去吃早餐然後吃完直接去會議室，應該有整整40小時沒睡，但還是順利結束了，但結束因為太累好像沒慶功，回家睡死了。`,
+`謝謝 H2U 讓我認識大家，老實說專案學習歸學習，但我覺得更珍貴的是這些人，沒有這些人也不會有這個學習的機會。7月27日，跟 Larry 一起吃慶功，聽到 Larry 親口說出麥肯錫的故事，只能說謝謝這些人為這個資本世界貢獻，這個工作強度真的只有世界那千萬分之一的人可以承受。8月3跟4日的宜蘭露營真的很頂，吃超好吃的冰，吃甕窯雞，一起買烤肉食材，還要假裝很會調酒給大家喝，盧恩喝醉就睡覺嚴厲斥責。隔天天氣也超好，去海邊喝咖啡＋玩水，再去買生乳卷。之後一定很難很難把大家聚在一起，我永遠不會忘記這段回憶。`,
+`總之，之所以管顧社會這麼辛苦，主要還是第一次接觸商業專案，Mentors 的要求高、再加上大家身兼多務導致。雖然現在還沒工作，但我會先假設工作比碩一這段時間輕鬆，之後再來驗證。`
+]},
+{id:"ch3",no:"03",tone:"light",plate:"chain",title:"區塊鏈社",sub:"從圖書館小討論室裡只有一隻小貓的社課開始。",excerpt:"第一次去社課，現場只有我一個人。我回去想了一個晚上，決定把這個社團搞起來。",date:"2023.09 – 2024.06",place:"台中 · 中興",cap:"從空殼社團到第四屆：每一屆是一個區塊。",blocks:[
+`h:區塊鏈社誕生（碩一上）`,
+`時間再回到剛進碩一的時間，2023年9月17日，當我錄取中興以及申請管顧社的同時，我也同時在看中興有什麼社團，但結果是0，中興這個社團荒野什麼社團都沒有，但我看到中興區塊鏈社，我就挺有興趣的。我大概在2019的時候開始參與加密貨幣市場，我只是想投機，挺好玩的啊但也輸挺多錢的笑死。然後看到剛剛好他們有社課我就決定去看一下，哇勒結果社課只有我一隻小貓，然後是在圖書館的小討論室。`,
+`當初的我也就矇矇懂懂，有聽說 Web3 或是區塊鏈領域其實挺 promising 的，但也還未成熟。我就回去想了一個晚上，我決定如果我把這個社團搞起來，在履歷上是絕對加分的，而且這 title 可以認識很多人脈，最後走區塊鏈產業這條路也是挺令人興奮的。`,
+`隔天我就約社長智翔聊了一下，但當時這社團就只是一個有名字的殼而已，實際上沒什麼運作。我就跟他說，我有一些經驗，可以把這個社團搞起來。當時的他很內向，我也很擔心這樣會不會太打擾他，畢竟誰要相信一個昨天突然出現的人然後說要把社團建起來，但他選擇相信了我，我們就開始了。`,
+`9月21日第一次開會都只有我跟智翔，先定目標、建組織、整財務，確定一下現況再看我們能先做些什麼事。但其實智翔真的沒什麼組織或是團隊經驗，但他專業知識比我多，於是我就都提出我的想法先快速實施。`,
+`其實社團目標很簡單，就是希望能讓人來參加社課，學習新知識或是交流知識，畢竟就是學術性社團嘛。更具體一點的目標就是在未來三個月內要辦5堂人數超過30人的社課（這數字原因很簡單拍團照比較好看，這樣宣傳更有用，不是什麼屌策略），主要目標我們放在下學期每個禮拜穩定運營跟有能夠支撐住下一屆的 SOP 跟現金流。因此這目標要達成就需要有有吸引力的課程或是講師，曝光就很重要，有點像一個飛輪吧。`,
+`q:行銷出的去，社員進的來，贊助進的來，又能行銷了，社團發大財。`,
+`於是我們先開始同時規劃課程、自己搞 BD 找講師、做自己的 Logo 跟品牌視覺，把 IG 粉專都打掉重做，幹那時候 AI 生圖真的超爛，我 IG 貼文模板還是用 Canva 拉的要吐血。找講師還好有 TBA 的資源做起頭，也謝謝當初有個社群叫胡子（現在倒了），很願意贊助我們錢，畢竟我們也懂這生態的遊戲規則，就是我們給他一個曝光的平台，他來免費幫我們上課，但條約我們也寫的很清楚，像是不能宣傳推薦碼之類的。馬的還有很多公關危機要去處理，像是在低能卡上就很多人質疑正當性，我還要去長文高情商回覆暖他一整天。`,
+`因為胡子社群他們贊助，我們就提供免費手搖跟食物，雞排雞翅之類的，受到廣大迴響啊，真的很多人來。也同時花錢買 FB 跟 IG 的廣告直接打整個台中市的學生或新鮮人，但轉化率很低，因為花的錢不夠，學個教訓。反而是很多的學生群組發廣告文很有用。`,
+`總而言之，標榜有手搖跟食物吸引力實在太高了，大部分人根本不在乎中本聰或是以太幣（好啦因為大部分想賺錢，所以也促成下學期技術分析的課），但我們也不太在乎，我們一開始的目標就是衝人數，我們相信這會有利於我們下學期的目標。我們的目標很快就達成了，場場爆滿，還有交易所送的周邊可以拿，何樂而不為。`,
+`直到有了這些人很多的照片跟影片宣傳，我們就有更大的槓桿去邀請更大咖的講師，或是跟他們拉贊助，就有錢啦，有錢又有人，之後又邀了華嚴哥、呢喃貓，還去 Meet Taipei 跟台北區塊鏈週見世面，跟一些大佬見面 KYC 一下，看能不能 BD 到一些機會，見到很多在台灣區塊鏈領域耕耘的人們，覺得十分憧憬。`,
+`2023年12月18日，上學期結束，目標都超出預期，也增加了2到3個幹部，讓我們更有信心能夠在下學期開扁，首先是下一屆的儲備幹部招募。`,
+`h:區塊鏈社壯大（碩一下）`,
+`2023年12月15日，第一次參加台北區塊鏈週，當時我們沒拉到贊助的票，但還好有 TBA 的優惠。真的是見世面，認識更多在這領域耕耘的人，來自亞洲跟歐洲各地交易所、項目方新創都出現在這，在 Panel 上講話的那些人的背景真的都很扯，但老實說我也有聽沒懂，有點深了，我比較像活動蟑螂，拿了一堆周邊。也跟當時在台灣學生區塊鏈社的同學們 KYC 一下，互相交流一下想法跟有什麼實習或嚕毛機會。很酷的是我遇到兩個發給我實習拒絕信的 COO 跟 CMO，當時直接衝去問他們為什麼拒絕我，但他們都很謙虛的給我履歷跟面試建議，我記得 COO 當時一直說 BI 很重要很重要跟鏈上數據啥的。`,
+`2024年3月12日，少甫哥終於來我們社團演講，人數也不負眾望的塞滿，課程辦的好做足了面子。還有幣修學分的 Jesi、合規交易所 Hoyabit、在台灣開礦場的 founder。也參考社員回饋開了很多工作坊，像怎樣嚕空投、基本的開鏈上錢包、基礎技術分析等等。`,
+`大概到4月中，幹部已經12個了，運氣很好的他們都想留下來繼續 build 第二屆，我也投入很多時間建 SOP 或跟他們對話，把這些 routine 的工作多一點自動化，就有其他空間做創意的事。題外話還去了挺多活動，像是 BingX 的尾牙、CoinW 的春酒（第一次去 W hotel 吃飯還是吃免錢的）、辦得有點傻眼的 ABS 或是各種 side events，也算是體驗啦。`,
+`第二屆雖然意外的出了一些問題，像是社長不小心辦活動辦太大，在校外學生活動開放酒類被學校事務組 ban 掉，然後講師審核變超麻煩，導致社課辦不起來，社長跟副社長忘了我說的先顧好基本的社課，後來就有點擺爛的。`,
+`第三屆的社長 Eason 還好是商管的，他接下後我跟他聊很多，還好他有把社團喬回來，社團做到可以讓幹部6人用社費買機票一起去大阪玩也是沒誰了，但他們辦的好我就沒意見了。轉眼間第四屆的社長也找好了，也約了時間聊聊，時至今日也是挺有成就感的。`
+]},
+{id:"ch4",no:"04",tone:"dark",plate:"funnel",title:"找實習地獄",sub:"一通 02 開頭的電話，和接下來的 111 份履歷。",excerpt:"看到 02 開頭，Whoscall 顯示資誠，我心跳直接爆炸。這是我第一次接到工作 offer。",date:"2024.01 – 2024.08",place:"台北 · 台中",cap:"2024 暑期實習漏斗，長度照實際比例。",blocks:[
+`h:PwC Taiwan 通知函「幹！我錄取了？」`,
+`最重要的要放在最前面，謝謝 Cathy 姐的 referral，以及在準備面試的種種幫忙，沒有你的出現，我不會是現在的我。謝謝群哥讓我寒假的時候住在淡水金雞母，我記得要離開淡水前我們一起去吃藏壽司，那是我第一次在藏壽司點啤酒。`,
+`2023年12月28日，我收到資誠的電話，是我主管 Ian 給我的口頭 offer。我當初在中興小窩要倒垃圾，看到 02 開頭，whoscall 顯示資誠，我心跳直接爆炸，這是我第一次接到工作 offer，感覺很不一般，我這輩子都不會忘記這個感覺。職位是中小企業數位轉型顧問，主管是經理 Ian，我的 senior consultant 是 Angela，我記得我的 mentor 是 Chrissy，都是人很好的前輩們。`,
+`2024年1月22日，第一天上班，9點上班，早上要6點或6點半起床，那天寒流還下雨，要從金雞母（我住的地方）走去台電宿舍（公車站名）大概十分鐘，到那邊搭公車到淡水捷運站，再搭大概55分鐘的紅線到世貿。第一天也沒幹嘛就那樣，但對當初的我來說，領電腦、員工訓練、看影片，領到人生第一張識別證，一切都是很新奇。`,
+`接下來的實習期間就是各種資料整理，看一些全球研調機構的研究報告、一些自己請外包訪談跟問卷公司做的質化或量化的分析，還有一開始覺得可以看著101工作是一件很酷的事。撇開工作不說，認識了 Dean、Ruby、Mi、May、Alex 這些厲害的人也是讓我學習很多。每天早餐買捷運站的飯糰＋熱美式，午餐吃作膾的便當或是走去吳興街、晚餐沒人約就吃 Sukiya，就這樣過完了寒假。`,
+`2024年2月19日，開學了，原本就是安排開學後一個禮拜實習2.5天，Ian 人很好的讓我在家工作1.5天，所以直到6月28日實習結束的模式都是禮拜一在家工作，二三整天上課，禮拜四 WFH 上半天＋上課，禮拜五早上搭高鐵去台北上班，有時候當天來回（這是我覺得最難受的，每天早上從中興騎去高鐵站，搶最早的五折早鳥票，沒記錯大概10分鐘車程，但沒測速我都飆到8分鐘，難怪我原本那台小灰會壽終正寢）。`,
+`這是我第一份實習，其實我到現在我還是覺得有點難想像，當初的我還是會持續不斷懷疑自己，會一直覺得「誒身邊的人都是台清交成政」，但是我爸跟我說：`,
+`q:你們不是都進來了嗎，代表你們的能力也差距不到哪裡去。`,
+`當時的我第一次感受到「自己好像不比頂大差」的想法，漸漸的沒有那麼不自信了，畢竟當時頂大這些人是我找實習最大的對手。最懷念的是跟 Ruby 還有 Mi 中午去吃吳興街皮蛋麵。6月28日離開 PwC，回想這份實習對我來說一個很好的開始，在 CV 上有了算是大家知道的 Brand name 跟一個 Business consultant 的 Title，但接下來找實習還是找的挺苦的⋯唉。再次謝謝凱西，我這輩子不會忘記這種恩情。`,
+`h:找實習地獄`,
+`我想先謝謝這段期間幫助我的各位。大概從2024年3月我就開始找暑期實習了，大家也差不多啦，但我就是整個海投，基本上只要閒下來就在找實習，或是看哪間公司開缺了沒，整個非常痛苦。我記錄的總共投了111個職位，進 first round 有12個，second / final round 有6個，最後拿到3個 offer，最後就選澳佳寶啦！`,
+`CV 跟 Cover letter 絕對超過30個版本，尤其是那些金融業或大公司的填寫履歷都複雜到靠邀，寫過三份面試作業每份都花差不多30-40小時，6次跑上台北面試，還要搞準備面試的時間，有些還在早上害我要住台北或很早起床等等。總之，成本比我想像的還多，還有更多情緒成本，比如心態炸掉或是在等很期待的錄取通知，搞到自己睡不著、書看不下去，跟朋友出去也沒辦法放下那些雜念。`,
+`可能會想說實習真的有這麼難找嗎，肯定沒有，是對我的學歷＊能力這個組合來說，要找到符合自己期待的有難度，我自己就是希望能進 Big brand（原本我以為我沒有這個迷思）或是看起來潛力很高、是自己喜歡領域的新創，看到 JD 是一副打雜的我想都不會想。`,
+`透過這段過程，我發現我很急著證明自己，證明我過去這一年特別辛苦沒有白費，證明我正在追逐台政成清交這些人的腳步，證明他們可以的我也做的到，或為了追逐自己的 LinkedIn profile 可以「看起來有料」（當時的我就是個小朋友），所以才會很追逐 Big brand。因此，在過程中不斷的因為學經歷也好、專案經驗不夠也好被刷掉，我都還是盼望有那一點點的機會能夠進入這些企業，才能為自己的短期未來鋪路，所以才投。當然啦，現階段來說，肯定也沒有妄自菲薄到去投 McKinsey 或是 Google，還是要懂得評估自己能力的，把這些大企業當多年後的目標。`,
+`四月，還在 PwC，屁股都還沒坐熱，就開始準備找暑期實習，因為 PwC 的約是到6/30，我也沒想要續約的意思，當時的我就覺得一定要換產業試試，而且覺得暑期實習一定會找到的啦這種想法。玉山、中信、星展等銀行最先開始跑，然後我就接到酷碼的面試，面到第二面4/25，但總部在內湖還不在捷運站附近，反正要通勤比想像還要久更久，就放棄了，這時還覺得沒什麼差，還有時間。`,
+`五月，接到野村作業、None group 拓荒資本面試，就沒了，開始感到慌張。為了5/16號的拓荒面試準備了一份 SUI 的報告，基本上做到快死了，一個禮拜應該也是花30小時以上，直接做到天亮我操，然後去面試，但工作內容是項目研究員，對我來說還是太硬了，就沒繼續面下去。接著還是持續投，我也開始詢問 PwC 可不可以續約，我想說也沒什麼不好，一開始我的 mentor 說沒問題，但下禮拜他們討論過後又說之前沒有先例，我又難過一天，心超涼，幹因為這樣我一個禮拜沒投履歷。反正最後還是只能繼續投，我也開始在尋找自己之前在幣圈認識的人，問問看有沒有實習機會，於是找到一間交易所叫 Hoyabit。`,
+`六月，開始感受到痛苦，身邊的人開始一個接著一個找到實習，我沒臉面對我自己的失敗，「我真的就這嗎」我一直問自己。六月前兩個禮拜，開始結束了學期課業與區塊鏈社，也開始要去一些很早就約定好的局，因為當初的我都認為六月的我會很開心已經擁有實習。端午節6/10那週，去面試博世科、UAG 和迪卡儂，還要準備全英簡報有夠麻煩，我原本很期待迪卡儂的 CRM 職位，但過兩天禮拜五就直接來感謝信，我那天超難受，還在上班到一半，心真的超涼。6/14收到交易所的面試邀請，而下週6/17專案總驗，也沒時間投實習，6/20號就要去澳門，很開心但是心裡還是放不下實習，6/25一回國就去台北面試，就是淋到全濕那次，面試了一間能源新創跟交易所，當下面完都覺得很穩。`,
+`七月，我還記得7/1禮拜一，已經距離6/25六天，我這個禮拜更加異常的緊張與恐懼，反映在生理上的睡不著，反正就是很焦慮。而我在7/4收到能源新創的 offer，但同時，我收到蝦皮 PM 還有 Deloitte SAP 的面試邀請，在7/5、7/7面完，7/8我收到交易所的感謝，他們最終還是決定不開缺，好吧畢竟是我去找他們的。`,
+`7/8做了一個決定，決定冒著風險挑戰蝦皮跟 D 所，於是我拒絕能源新創，接下來一個禮拜都沒收到消息，對，這個冒險失敗了。接著我收到華揚創投、iCHEF、Blackmores 與 KPMG 的面試邀請，進入了到最後階段。`,
+`7/19跟華揚面試，對當時的我來說是個 Dream Job，畢竟創投行業很酷，面試完馬上給我一個新創投資評估報告的作業，我選了 KryptoGO 寫了整整一個禮拜，絕對有花到35小時，埋頭苦幹到死（因為我不會）。7/25颱風假，iCHEF 說可以改線上，線上面完40分鐘直接給我 Offer 我人整個傻掉，但我還是先跟他喬，討價還價後拖到最後回覆期限是7/30，因為我想等其他家。7/25因為沒地方住，我在北車附近的青年旅館做華揚的作業做到沒睡覺然後交件，隔天7/26去台北面 KPMG，7/29我又上去臺北，面我現在這間公司 Blackmores，面完隔天7/30直接給我 offer，但我心裡還是繫著華揚，結果 Offer 過幾分鐘後，就寄來的華揚最終面試通知，但時間在下下禮拜，代表我要放棄手中兩張 Offer 再等兩個禮拜且還是有機率沒上，於是我就果斷停損了（簡單來講就是沒種）。`,
+`痛苦雖痛苦，因為花了很多錢來回台北跑面試，當時的我看著朋友們都有實習就剩我在醜，是認真每天都會難過與懷疑自己，每次復盤都是求職訓練，CV 一修再修，面試練了再練，害我還去買 Harvey 跟 Linga 的面試課，不得不說還是乾貨滿滿。`,
+`h:上學期的有點生病`,
+`但換來的就是我好像快倒了，不知道是水土不服還是怎樣，長期熬夜加上可能自己壓力上來，專案＋學校還要找實習等等，忙到連跟搭拉見面的機會都沒有，體重開始狂掉＋胃痛＋心悸啥的，後來發現是心理作用，去照胃鏡也沒事，去看醫生醫生也說沒事，還給我開抗憂鬱的藥笑死，但我當然是沒吃啦，也許我只是擔心我突然掛掉，所以當初 Hahow 的大家才會覺得我黃黃的，感覺整個身體都生病的感覺，但後來下學期就沒事了，有找到平衡是件好事。`
+]},
+{id:"ch5",no:"05",tone:"light",plate:"shelf",title:"澳佳寶與 DAC",sub:"碩二開始，被操爆的半年，和最後一次爆投。",excerpt:"「我不希望你把你自己當 Intern，我要你成為公司的戰力。」我當下是有點開心又害怕的。",date:"2024.08 – 2025.02",place:"台北 · 信義安和 / 公館",cap:"康是美保健貨架：小瓶魚油站上壓克力展示架。",blocks:[
+`h:把我操爆的澳佳寶實習`,
+`2024年8月12日，登陸澳佳寶 Blackmores，職位是 Marketing Intern，負責台灣的行銷，偶爾對接香港跟澳洲的品牌，我要直接回報專案給 TW/HK head of Marketing 可怕的 Crystal，但學習我是跟著我的 Manager Sabrina，這兩位都在 FMCG 產業的行銷耕耘很久了。我先講我一開始對工作的預期，就像 JD 原本寫的那樣，像是對台灣實體通路做企劃，競品分析等（像是康是美跟屈臣氏），然後耳聞 FMCG 挺好玩的，我就覺得行銷或數據我應該還行吧。`,
+`有趣的來了，實際工作內容真的有點多，簡單說就是，專案 ownership 超高、主管夠狠夠嚴厲。`,
+`但我要先講一個我覺得最有趣的，也就是 Effy 竟然來澳佳寶實習，我們要當同事？？？超扯，因為我們同時都在 struggle 找實習，但沒想到 Effy 也投了，轉眼之間就在我入職後的一個月，Effy 跟我坐在同個辦公室，何等救贖，因為整個辦公室男女比大概1:5（都是資深女強人），沒話題很尷尬。這幾個月我們一起吃遍吳興街，從波奇、泰式河粉到當歸麵線，坪林手頂中頂，公司交換禮物還抽到我，直接要求雙層杯，或是看我被 Crystal 海扁或被迫加班。總之，能一起從管顧專案到一起上班是一件很酷很值得回憶的事情。`,
+`工作內容部分，我記得我剛進去，然後第一個禮拜 coaching session 就感受到 Crystal 的實事求是與冷漠，他跟我 1 on 1 的時候就跟我說一句話：`,
+`q:「我不希望你把你自己當 Intern，我要你成為公司的戰力。」`,
+`其實我當下是有點開心又害怕的，我可以學到很多，但我做不好就是要無薪加班（上述這兩點我都有做到）。一開始就跟著 Sabrina 學習一些小專案運作，了解各部門要怎麼跟行銷合作，然後同時還要不斷的 clarify 各種專有名詞，馬的他們根本沒整理啊，因為大家都老江湖了，然後上一屆實習生似乎是第一屆，Handover documents 寫的有夠爛。`,
+`接著就開始接專案了，FMCG 的 trade marketing 是我最大的 learning，也就是我在做的事。「想像有一瓶澳佳寶魚油放在屈臣氏的陳列架上，你要怎麼讓消費者拿澳佳寶而不是大研生醫？」這就是核心目標，所以如何提高店內能見度、優化給通路促銷的 ROI 是最重要的。所以我要針對這個產品的：`,
+`l:客群做通路促銷活動策略：像什麼第二件8折等等背後都是各種數據支持|貨架陳列或陳列道具：這就是 POSM，你們去康是美看到的產品上的貼紙，或是貨架最上層的紙盒或壓克力等等。（這我倒是設計挺多的）|新品上市策略：這叫 NPD Launch，要寫一些文件給通路 Buyer 讓他們知道我們要怎麼上架，還要討論數量之類的，這我就有點忘了。`,
+`正因為我負責 trade marketing，代表一件很靠北的事，就是我要去跑通路門市，目的是實地觀察通路擺放狀況。幹8月9月的天氣欸，就幾個下午我跑遍信義松山跟大安的康是美跟屈臣氏，雖然 Sabrina 跟我說可以坐計程車，但為了效率我還是騎 ubike 了，啊其實也不算放風，因為回去還要準備報告，為了準時下班踏板是發瘋的採呀採。到點就是拍拍架上照，記錄一下數量，順便觀察一下其他競品在搞什麼飛機，還可以看看要不要檢舉別人。`,
+`檢舉別人這件事有點酷是個冷知識，就是因為台灣在保健品或是藥品的行銷標語上有非常嚴格的限制，像是你從來不會在葉黃素的行銷標語上看到保護眼睛這兩個字，或是在魚油的行銷標語上看到大腦之類的，除非你有小綠人標章啦，所以競爭者之間會互相檢舉。我實習期間公司也有因為葉黃素貼紙呈現模糊就被罰過10幾20萬，呼，這貼紙不是我的鍋。`,
+`總計來說大概也做了4個競品分析專案，台灣的兒童葉黃素、益生菌、膠原蛋白、韓國的高蛋白＋免疫力營養品。其實都挺好玩的，也被教育了很多次笑死。然後真的做了非常多的通路產品行銷的專案，我之前紀錄是應該15個啦我去看我的履歷寫的，我仔細回想我認為最麻煩的專案，就是壓克力展示架。`,
+`你就想像一個透明架子把瓶身架起來然後讓架上能見度提高，問題出自於新款的魚油其實瓶身很小，在架上能見度很低啊根本沒人看到，貼紙做過了 ROI 不高，於是這問題就丟給我，預算4萬，並且希望能提高銷售量。最後參考其他競爭者他們會用紙盒去坐墊高，或是塑膠盒 or 紙盒包裝等等這幾個 Ideas 去跟 Crystal 討論，結果是全部被打掉，但那時我已經習慣了，因為玻璃瓶在厚紙板架上還是太危險跟不穩。`,
+`於是我就想到壓克力這個材質，我就自己畫大概的設計圖，去找廠商問報價，然後就是馬的超貴，一個240？，而且我跟 Crystal 討論只要先在營業額最高的前100家實施，少量當然就貴啦，憑什麼人家幫你做，別人都幾十萬單位的訂單。最後我就透過 Buyer 去詢問他們有沒有合作的，或是有沒有價格較低的，最後因為預算問題，我們跟 Buyer 談判可以談到他們幫我們出一半，能增加銷量是一筆互利的交易啦，最後就成功開始打樣然後生產，接下來就是放進去每間康是美。現在去康是美應該還是可以看到那些我做的東西，只是看不到成效就是了，因為還沒陳列完我就結束實習了。`,
+`h:NTU DAC 台大資料分析與決策科學社`,
+`老實說，我對 DAC 這段經歷沒有到太多的熱情與記憶點，也許是人不像清大管顧那麼有溫度，或是我太喜歡清大的人們了，但還是有穩穩地走完。我也沒有後悔過，結果論上 DAC 的價值很高，也成為我一塊求職上很重要的墊腳石。`,
+`2024年8月25日，DAC 團體面試，這天早上九點，大家就在集思報到準備團面，老實說當時期待很高，所以就很興奮地參加面試。在面試前我也打聽過流程跟形式，我也有先準備拉一版簡報。開始之後就是一番介紹，接著是介紹題目，就是給我們幾組咖啡廳的 Data 然後分析如何提升營收，但反正這種面試就是看你的 insight 還有邏輯，大家也很願意互相聆聽，先規劃完再做事，然後20還30分鐘後上去簡報，就結束了團面。團面結束後跟組員一起聊天離開集思，然後還遇到 Dean（PwC 實習夥伴），他是我上一場，然後他就一直瘋狂靠北自己隊友有夠雷，他覺得要被雷下去了，但我就跟他打哈哈打個招呼就分開了。`,
+`2024年9月5日，個人面試，印象中是跟當時的專案長面，沒什麼記憶點，就面一下。`,
+`2024年10月17日，專案 Kickoff。其實在 kickoff 之前就有了大概3堂社課，幾乎都是跟 Dean 一起下課吃宵夜，然後去他的 BOT 單人房耍一下廢再回家。客戶是肯驛國際，國內最大禮賓供應商，主要服務企業端客，但我們專案主要對象是其子產品「叫車吧」這個主打 To C 客群跟高品質叫車服務，像是機場接送等等。當時叫車吧面臨會員再使用率低落的問題，他要我們想辦法提升營收。`,
+`而專案一開始才發現整組只有我有做過專案的經驗，所以在一開始定義問題時遇到很多瓶頸，然後我們的助教又沒有 Cathy 這麼罩，所以當時的我覺得我就是擔任助教的角色。老實說這跟我當初進來的目標相違背，我進來就是希望專案的時候有前輩可以帶著我做中學數據分析專案，但我一開始就帶著大家規劃專案時程，當時的我總覺得缺乏 data-driven 的角度去規劃會不太對。總之還是帶著學習的心態去一步一步走。`,
+`直到開始分工的時候我才意識到他們安排的組員分配是有經過思考的，我們每個人都站在同個水平線上，只是領域或技能不同。像是昱勛跟品捷在硬實力上很強，用 Python 還有 Tableau 分析資料，宜蓁很會用 Excel，士雍等等，印象中昱勛跟品捷還自己做簡報幫我們上機器學習的課。`,
+`因為一開始大家對專案沒有認識，等於完全沒概念，除了有幾堂課有講問題定義跟假設，但助教也沒帶大家（這是我覺得有點奇怪），所以我們在定義問題上，我帶著大家一起做問題定義，總要有時間維度以及衡量標準。但其實資料還沒清過，我們也不是公司的人所以不了解資料集，所以我們就暫定一個數字跟期間，但最後的目標版本是：在 2025 年 6 月前，提升既有會員平均再購次數 20%（怎麼跟 Hahow 一樣？）。`,
+`我們透過這個目標去拆樹，拆出幾個公式跟假設，接著一開始要做資料蒐集。因為一開始肯驛就有給我們一堆資料，很雜很多老實說（當初以為很多了，但之後去美光才知道真正的大資料是 Excel 扛不住的，只能用 SQL），一開始就是先定義資料然後去做清洗，清洗完之後要做 EDA，定義一下欄位，區分會員資料跟訂單資料（欄位大概40個），這時候學習用 Tableau 跑出很多圖，像是分布還有一些離散情況等等。接著做了 RFM 試著分群（這部分後來回顧發現太早做分群了，連 EDA 都沒有搞好）。`,
+`後來重新認真做 EDA 並增加一些新定義欄位，篩選後真正有用的資料真的很少。有了這些資料之後，更新了一些假設，以及開始跑回歸跟假設檢定（這部分我真的沒學好==），但他們真的很會，最終我們放棄 RFM 也放棄 K-means，我們改良 RFM 加上我們自己的新定義資料去做分群的假設，分成商務客、獨旅客以及團旅客，然後再用這些客群跟新定義欄位去跑統計，意外的發現差異顯著，於是我們就把這些資料拿去做分群指標（服務使用跟折扣使用維度），配合訪談，規劃出三個客群的 persona，肯驛 CEO 覺得這些 persona 很不錯。`,
+`接下來我們就想了一些行銷策略，因為 CEO 叫我們先不用考慮成本，先提出來再說，但我們還是有估個數字，最後三個客群都做行銷策略，然後我們想了一個 Line Bot 聊天機器人，可以即時掌控像是優惠碼或是客製化推播，我們也用 Figma 拉出10幾個的 line bot 的 UI（當時不了解 Cursor 不然可以直接 vibe 一個簡單的可操作介面），我們也在 Final Review 的時候 Demo 給 CEO 看，也做了一個簡單的忠誠度計劃。`,
+`2025年1月23日，Final Day，整體的回饋是好的，最終大家也都很開心專案結束，但老實說 learning 並沒有太多，很少有那種 oh shit moment 的深刻體悟，後來我們這些組員也沒有再聯絡了，只留下 CV 上的成果數字。`,
+`而在上學期這段期間，每週三跟六都有社課也是挺硬的，要一直跑公館，然後週三的六點還是七點在新生教學上課，因為澳佳寶在信義安和，所以我下班最快的方式是騎腳踏車飆車沿著基隆路騎到學校去，然後天氣又超熱，每次到教室都滿身大汗，至於為什麼不遲到一下，因為遲到超過10分鐘會被扣保證金，至於為什麼不搭 uber，基隆路是一條不能靠近的禁地。然後下課都可以弄到11點才回家，12點才到家，隔天7點初頭又要起床體驗一小時半的通勤時間。總而言之，為了卷這個鬼社團鬼實習，真的好累，但還好在履歷上有發揮一點功用。`,
+`h:最後的找實習之路`,
+`2024年11月，又到了爆投實習的時候，但我還是要先感謝幫助我的大家，真的是十分感謝。我已經對找實習老熟了，但還是要投，改變就是更知道自己要什麼，可以縮短範圍去找了，這次就主要注重在科技與金融看看，大概投50份吧。但我覺得有些挺印象深刻的，像是 Deloitte、蝦皮以及 AGM。`,
+`Deloitte 這個職位老實說我是面第二次，第一次是前一年我沒表現好，這次熟悉整個面試模式，再加上 Coco 跟 Katherine 給我題庫般的指導，讓我直接在團面屌殺全場（開玩笑的），就是挺順利的拿到最終面。我記得在2024年11月16那天，下著小雨，我午餐跟 DAC 的大家吃飯，晚餐跟凱西還有 Joshua 吃，吃完去台大管院打橋牌，幹我超廢。結束後 Aiden 來管院載我，我們去大稻埕走走，我跟他說我 Deloitte 進最終面，Aiden 也在等麥肯錫的通知，那天我從言語感受到真心為彼此開心的喜悅。最終面是跟一個 partner 面，我甚至那天中午是在澳佳寶實習偷偷溜去公司對面的小樹屋面試的，那天中午跟 Effy 吃旁邊的梁社漢我記得。`,
+`蝦皮這個 PM 職位是 PwC 的正職學姊以及 Effy 在蝦皮的前同事 Chrissy refer 的，謝謝 Effy，走到最終面但我還是沒把握住我挺難受的，但有趣的是我在面試的時候，Effy 路過他那層會議室，然後看到我在螢幕裡面試還幫我拍照，這真的挺好笑的。`,
+`2025年2月14日，關於 AGM 的實習被 rejected 的紀錄。這天是情人節，禮拜五，Lin Ga 在禮拜三面試結束的時候跟我說，禮拜五會告訴我結果。我禮拜五早上8點起床，一整天就是手機鈴聲開到最大聲，怕自己沒接到電話，中午吃個午餐，開始緊張，什麼事都沒辦法做，心想著我等等就會拿到 Offer 了，我開了 Mac 的螢幕錄影，等待 Offer Call，直到3點、4點、5點，欸要下班時間了⋯⋯直到5點，搭拉下班回到家說我們要去吃飯，當時5點20分，我說沒問題，心想著等等應該就會有電話了。我們去吃大埔鐵板燒，點完餐已經過了6點，我整個人就開始不行了，情緒好久沒有這麼脆弱過，我在大埔點了都吃不下，我也不敢說話，我真的好難過好難過，我知道我一說話我就會爆哭。回到家，我一個人坐在椅子上，從7點哭到10點，哭得差不多後就開始寫 Next Steps，超低能。`,
+`為什麼這麼難過，因為我很想要這份工作，付出的心力前所未有，在一開始 cold mail 約了3場 coffee chat 準備好久，謝謝凱西跟 Dean 願意幫我 connect 這些 intern，花了好多次準備履歷跟 cover letter 還有狗幹影片，然後送出。直到1/24那天，跟陽光國小的大家回去唱歌，那天晚上11點，在買冰結買到一半收到信，我想說啊幹是要我過年期間做這作業喔，結果真的是，給我一個禮拜多做這份作業。但 Aiden 收到我傳的馬上打給我跟我討論，隔天直接幫我拉一版 storyline 感動到吐，還有謝謝 Coco 願意給我很多 Financial Factors 上的建議。`,
+`阿可想而知，我一年中最愛的節日過年，要心心念念著這份作業，也不誇張，我過年期間幾乎只要空閒都在做，因為我菜吧，要去柏翔家也不能放開來玩，回嘉義阿嬤家還7點起床去星巴克坐到中午再回家一起陪阿嬤甲崩，初三回家後，也都在做，之後就回去台北，跟 Aiden 一起討論這份，先去新店找他去他家大廳討論，隔天又去不知道是中和還哪裡的星巴克持續做，直到完成這整份報告。直到4天後吧，就給我 Final Interview 的邀請了，非常開心。不出意料，是 Lin Ga 面試我，也是預料的15分鐘，總之我做好萬全準備，面試，結果，Zoom 突然沒聲音，測試都好好的，一定要當下沒聲音，直到花了3-4分鐘才喬好，但其實也沒必要慌，繼續報告然後把 BQ 講好就好，也確實我沒愧對自己，這天禮拜三。接著就接回前面那樣了。`,
+`難過的原因是我已經投了快上百份 CV 了，加上之前碩一也有個兩百，先前的 Deloitte 一大堆也是等待折磨，到底怎麼搞，他媽碩士班都在投實習，我覺得是我又再次讓自己失望，讓朋友失望，覺得很對不起這些一直以來幫助我的人，Aiden 一直幫我，謝謝 Hahow 的大家，盧恩面試當天還記得要叫我加油，瑋翰也說我一定可以，但就是幹又倒掉。`,
+`q:但沒事啦就一個實習而已超好笑，少了其實也不會怎樣，覆盤、檢討還是要做，準備好再戰。`
+]},
+{id:"ch6",no:"06",tone:"dark",plate:"wafer",title:"台中美光",sub:"碩士最後一份實習：后里廠、印度室友，和一群像認識很久的朋友。",excerpt:"每天早上五點起床，騎一小時十分鐘到后里，趕在八點前逼卡進閘門。",date:"2025.04 – 2025.08",place:"台中后里 · F16",cap:"機台 loading 的晶圓圖：藍色是瓶頸站點。",blocks:[
+`h:面試到入職`,
+`2024年11月的某天，我海投投到了美光的職位。2025年3月10日，我收到美光的面試邀請，信件直接寫出三個 interviewer，超酷，可以讓我直接大調查這些面試官。`,
+`2025年3月14日，美光面試，三個經理面兩個面試者，我記得我是跟另外一個理工仔一起，老實說這是我第一次跟理工科的人一起面試，挺新鮮的，能看到理工學生的面試模式，經理主要就是聚焦在他的論文然後問爆，就像是身邊的理工人形容報 paper 被教授電那樣。我就是照我正常面試那樣問一些 behavior，但還好 CG 跟 DAC 的故事有讓我的數據能力被看見，我能幫到這個 team。但有一個經理很嚴肅的問我兩個製程相關的問題，好像是某個 module，是 Diffusion 還是 etch 我有點忘了，只能說完全答不出來，只能轉到我會的講，但當時我反而覺得沒差，爆掉就爆掉，面試很常見這樣，他感覺就是故意的。但意外的是我被選中了，我還記得我是用電話跟我爸媽講這個消息。`,
+`2025年4月14日，報到。通常我報到都超早到，然後我穿襯衫跟西外，又覺得自己太正式了，因為我看其他正職還有穿短褲拖鞋的，牛逼，一直看就知道資深程序員了。我好像是唯一當天報到的實習生，因為 Semester Intern 很少，我後來才知道學期計劃比較少部門願意開，當時全台灣只有少少的人。報到後前三天都是員工訓練，因為是大廠房所以比起之前實習都是在辦公桌看影片，還有很多要實際去走的消防演練。`,
+`我的主管是經理 Webber，他們統稱 Manager 叫 M1，senior manager 稱 M2，Director 稱 M3，直屬學長叫做 Mason，在光光待五年的前輩，但我忘記他職等了，應該 E3 嗎？（Engineer 職等是 E1 最小往上推）。`,
+`4/14到7月這段時間，根本是通勤地獄，我住在中興附近，台中南區，然後台中美光在后里，我每天騎車上班要花1小時10分，最難受的是下大雨又超冷，我真的覺得我人快沒了，有幾次下超大雨又超冷到公司褲子衣服都濕，學長姐都很擔心我騎車騎一騎出事。也因為這樣我試著改變我的作息模式，每天早上5點起床，然後每天吃優格碗和麵包，然後跑步或看看書，沖杯咖啡後，大概6:40出發，騎快一點7:50會到公司，趕在8點前逼卡進去閘門。`,
+`因為我是 Semester Intern，公司嚴格規定只能上2.5天（Webber 原本想幫我喬，但規定有點難打破，我在實習結束時有跟 HR 建議可改善），所以我是禮拜二、三整天、禮拜四早上，禮拜四中午大熱天要騎回家超痛苦幹。在這期間我跟正職學姊叫則儀（跟我同天進部門，現在是我同事了），有聊到她會先待在台中兩個月後會去林口廠（我們同個 M2 管台中桃園）（我這個 team 林口台中都有，都是 Webber 管理的），他就說應該可以跟 Webber 聊聊看這個可能性，因為搭拉在林口這樣就可以住一起上班，Webber 也人很好的幫我喬，但可惜的是沒辦法，因為兩邊廠的 Team 都沒實習生缺額了。`,
+`h:超好玩的實習`,
+`直到7月開始我就轉成 Summer Intern，跟其他 Summer Intern 一起，林口跟后里廠加起來好像有200個，這段時間真的很好玩，我覺得這段時間可以分7月跟8月兩個階段去講。`,
+`第一階段，7/1我入住美光宿舍，然後發現我室友是印度人真的把我驚呆了，他的名字是 Sarim Khan，是個很正直的人，很單純很努力的人，應該可以這麼說，濃濃的印度腔。我們其實相處的還行，可能因為我們都對對方挺好奇的，所以就一直互相問問題，每天晚上下班回家幾乎都會一起在房間吃飯，有時在公司買，有時會一起去外面買東西，像是騎 ubike 去買必勝客之類的，或是去吃附近他推薦的印度料理，我印象很深刻，第一口直接辣到耳鳴。`,
+`他跟我說他不太喜歡回家，想離家越遠越好，也因為這樣我覺得他的防備心有點重。有一次我跟他在聊我們可以互相學習語言的事情，但他似乎理解成我們是這種利益交換的朋友，他還有點不開心一個晚上，後來他跟我坦承是他過去的經驗讓他比較敏感。而且很多朋友跟家人一聽到我的室友是印度人，他們都很擔心對方很臭或是很髒（大家對印度人的觀感都不太好），但老實說他沒太多味道也挺乾淨，他還跟我聊香水，他說他都只買自然的沙龍香（我沒聽過的品牌），他說我的都太商業太多添加物對身體不好，很好笑，他也很直來直往，一聞到我的 Eidesis 直接說很臭。`,
+`我覺得他真的很認真，也太誠實老實了，像是參加任何比賽他都想拿第一，任何他覺得能夠增加他能見度的事件。最猛的是實習生期末有一個分組報告要拍影片介紹各部門，他真的是用盡全力，然後為了投票去用 teams 私訊所有能私訊的人（可以想像每個 team 都有一個人被私訊），是認真的，這件事很快就傳開，其實造成很多人的困擾，這就是我說的有點認真過頭了。還有關於他的 final presentation，他也是用盡全力，他好幾個晚上都住在辦公室，我沒說錯，他自己去辦公室加夜班，我覺得超扯，大家都覺得超扯。第一次就是大概11點我回到宿舍開始準備睡覺，他要出門了，我問他去哪，他說去公司弄一下報告，我認真呆掉三秒，問了好多次 are u serious，然後他就出門了，後來大概還有5次或6次這樣⋯`,
+`我也有嘗試想幫他，我跟他一起討論他的簡報，老實說有點沒條理，有點難懂，我也覺得他有點不知變通，也不是說要很高標準什麼的，但至少要能傳達資訊吧，他可以花3小時為了用 GPT 生圖，但不改善他下 prompt 的方式，導致成品也不是他要的，我也嘗試幫他跟他說一點方法，但他有他的執著。總之他認真的讓我開了眼界，了解印度文化，讓我認識兩個喀什米爾人，也了解他們兩個地區的當前情況。8月就比較少跟他聊天，因為每次我回家他都在睡覺，為了晚上回去加班，超牛逼⋯`,
+`8月開始，我記得是7/31號，建華、翊傑、鍇哥、Mi姊、EJ 開車一起去吃壽司，應該就是這時候開始變熟的，反正邊吃壽司邊講幹，回去交誼廳再叫麥當勞來吃，好像加了梁品逸跟他朋友。從這天開始，整個八月幾乎每個晚上都聚在一起，一起在宿舍喝酒吃鹹酥雞，在房間跳舞唱歌耍憨，在交誼廳聊天打大老二，去健身房團練，在麻將間打麻將跟德撲，開車去勤美，去豐原星光大道，去宿舍旁頂樓籃球場打球，去麗寶不知道幾次，殺去月老廟看夜景，去大坑爬山被蚊子咬吃芋頭。我8/14離開美光，雖然只有兩個禮拜，但真的是用盡全力地玩，但這些人就很像相處很久的朋友一樣。離開美光後還一起去泰安爬山、去西區吃豬腳麵線、圓山蹦迪、公館約咖，這些種種都記憶猶新。`,
+`這些日子好玩真的很好玩，但是我也看到這些人玩樂之餘每個人都有不同的焦慮。在加入美光之前我身邊幾乎都是商科文組的夥伴，聊天的內容也都是在找實習、實習狀況、社團課程專案或課程之間切換，切換到這些理工人身上也都是不同焦慮。學生時期理組人會羨慕文組人可以一直去實習，不用做研究或是整天被困在實驗室做實驗，或是一直報 paper 然後被教授嘴砲；文組人會羨慕理組人只要把一件事情（論文或研究）做好就好，不用去整天擔心下一份實習在哪，投了上千份 CV 都沒下文，社團專案又要 review，又開會到凌晨諸如此類。`,
+`q:人要羨慕都是只羨慕好的一面，雙方努力的點一定不同，都是需要努力跟時運，持續學習才是最重要的。`,
+`h:我實習在做啥`,
+`我現在只說我理解的，因為我只是小小實習生，也許之後成為正職後會推翻一些已知。也可以藉機會解答大家可能會好奇的問題。`,
+`我的職位是 F11 HVM PROD. TACTICAL CAPACITY ENGINEER，F11 是桃園廠（F16 台中），HVM 是 High-Volume Manufacturing，好像是一個資深處長 M4 去管一個 HVM（桃園＋台中全部），PROD. 就是製造，一個處長 M3 管理的（桃園＋台中全部），TACTICAL CAPACITY 直翻叫做戰術產能（但沒聽過有人這樣講），有一個資深經理 M2 去管（桃園＋台中全部），再往下切就分成更細，桃園跟台中各有三個 Team，分別是 DX（數位轉型，建數據庫）、MXT（Max out，產能極大化），以及 Tactical capacity（產能規劃）分三個 team（根據不同的製程）。我之前實習是在 Max out 這個 team，而我轉正之後會先去 Tactical capacity 學習各個 module 後，才會回到 Max out（需要學習一些經驗）。`,
+`在講我的職位在幹嘛之前，先說明美光 IE（Industrial Engineering，工業工程）這個職位，一般來說 IE 通常會 base on 總部的業務計劃（business plan, BP）負責去規劃中長期的產能配額（3-12個月或更長），也會去規劃資本投資 CapEx（像是買機台）、Layout（機台配置），還有 Modeling（做產能優化跟瓶頸分析）等等。要比起來職能像是台積電的智慧製造，簡單來說大多時間會在電腦前處理數據集，把生產數據帶入模型估算出產能，然後不斷地跟製程、設備與製造討論後修改 target，然後把機台的利用率榨乾這樣。`,
+`介紹 TACTICAL CAPACITY ENGINEER，可以理解成是短期的 IE，我們要做的產能目標是 base on IE 的產能目標（Model of process, MOR）再去做突破，考量到良率損失、機台風險後，加上 buffer 規劃出一個短期的產能目標 POR（Process of Record）。而接下來我們就要去把實際產線產出的數據去達到這個很緊繃的 POR，最終我們會製作一個 capacity dashboard，讓所有人能看到全廠所有製程、幾千台機台的 loading 視覺化。我這個 Team 通常會一至兩位工程師負責一個製程（其中有 thin film、photo、etch、diffusion、CMP、WET、metro），工作就是去分析這些站點的各種數據（真的有點太多了我花兩三個月才背起來但現在又忘了），找出瓶頸並解決，以及去把每個機台的機台利用率都拉滿，不要讓機台閒置。比起 IE 更需要跟產線三寶們對話，也就是跟設備、製程、製造工程師開會，大概就是拿一堆數據去甩他們臉叫他們改善吧。`,
+`這職位挺酷的是大部分只有記憶體廠會出現，原因是因為像是台積這種 Foundry 他們是客製化代工，長期合約制（也許3-5年？），不同客戶的 Recipe 不同，機台模組也不同，目標就是準時交付，因此產能分配都會一開始就拉好，不需要去調整短期的產能分配。相反的，記憶體廠主要都是做標準化產品（像是 DRAM 第幾代、HBM4、HBM4E 等等），所以產能轉換成本很低（像是把 HBM3 的產能給 HBM4，只需要調整一下機台短期就可以切換），而客戶分布是一部份合約一部份現貨，目的是因為可以將部分產能保留給現貨市場（累積庫存也是造成記憶體循環原因之一）。主要原因是因為記憶體的價格容易受市場供需波動，而且在過去是有週期性的（大家應該都知道記憶體漲翻天），所以記憶體廠需要不斷去監控短期（每週或每月）的價格、訂單或是庫存等等，去調配接下來針對不同產品的產能。像是我印象中在實習的時候 maxout 產能目標就因為這種原因一直更動（xx 產品利潤較高，所以轉移產能）。`,
+`n:問題：文組要做什麼？為什麼他們要你`
+]}
+];
+const RAW_EXTRA = [
+{id:"epilogue",kind:"Epilogue",tone:"light",plate:"timeline",title:"學生時期結尾",sub:"走到這裡，這兩年的奇幻旅程結束了。",excerpt:"拿到畢業證書那一刻，我回想起當初走進系辦報到的那刻。",date:"2025.08",place:"台中",cap:"2022 → 2025：從考研到美光。",blocks:[
+`走到這裡，這兩年的奇幻旅程結束了，我也在結束最後一份實習後學校跑了離校。拿到畢業證書那一刻，我回想起當初我走進系辦報到的那刻，第一次走進台積館面試 CG、第一次跟 Hahow 還有 H2U kick off、第一次實習面試的緊張心情、第一次實習報到的那天早上、第一次走進台大上課，到無數個做簡報做到天亮、為了實習焦頭爛額的每個時刻。`,
+`q:許多人都高估了努力和成功的關聯，卻低估了判斷力的重要。`,
+`我回頭看看進入碩士的這兩年，我認為很幸運，但如果我當初沒有跨出那一步，相信加入管顧社的選擇，試著去抓住各種原本不屬於我的機會，不斷在各領域跟群體穿梭與學習、在種種不確定下做出選擇，讓我個性上變得更理性與沉穩、思考上更理解長期與槓桿，學習上更懂的辨別雜訊，以及更懂的愛自己與別人。`,
+`以上，看到這裡，也謝謝一路相伴著我的你們。`
+]},
+{id:"reflection",kind:"Draft",tone:"dark",plate:"judge",title:"加碼反思",sub:"是什麼從小開始塑造我直到現在。",excerpt:"第一個還是最感謝我爸媽。",date:"草稿",place:"大埔國小",cap:"草稿，尚未寫完。",blocks:[
+`其實我很多時間都在想這一切是從什麼時候開始的，是什麼從小開始塑造我直到現在，第一個還是最感謝我爸媽。我國小之前我爸媽都挺辛苦的樣子，完全不知道為什麼要生我，我爸媽說當初每個月都是借錢在過生活的，想到就可怕，比較養的活自己後就會開始開車載我到處跑，所以我小時候就可以去各個縣市跟景點，我覺得多看看其他地方還是有幫助的，雖然我印象模糊。`,
+`在大埔國小的時候因為班級少然後自己都在班上前三名，當然我爸媽也不會說什麼，我覺得我也挺用功的，所以都在打桌球，打得挺開心的。但上了國中後，國一時對自己迷茫，急於找到身份認同或是同儕的關愛之類的，所以⋯⋯`,
+`n:這一段還沒寫完。`
+]}
+];
+/* ---- chapter order: every entry becomes one fold. Add new chapters to this list. ---- */
+const SRC=Object.fromEntries([...RAW,...RAW_EXTRA].map(c=>[c.id,c]));
+function sec(id,from,to){const b=SRC[id].blocks;const i=from?b.indexOf("h:"+from)+1:0;const j=to?b.indexOf("h:"+to):b.length;return b.slice(i,j)}
+const TODO=[`n:這一章還沒寫。`];
+const ORDER=[
+ {...SRC.ch1,id:"exam"},
+ {...SRC.ch2,id:"cg"},
+ {...SRC.ch3,id:"blockchain"},
+ {id:"pwc",plate:"pwc",title:"PwC 資誠",sub:"「幹！我錄取了？」人生第一份實習。",excerpt:"看到 02 開頭，Whoscall 顯示資誠，我心跳直接爆炸。這是我第一次接到工作 offer。",date:"2023.12 – 2024.06",place:"台北 · 世貿",cap:"2023.12.28，中興小窩，一通 02 開頭的電話。",blocks:sec("ch4","PwC Taiwan 通知函「幹！我錄取了？」","找實習地獄")},
+ {id:"hunt",plate:"funnel",title:"找實習地獄",sub:"111 份履歷，3 個 offer。",excerpt:"我記錄的總共投了 111 個職位，進 first round 有 12 個，最後拿到 3 個 offer。",date:"2024.03 – 2024.08",place:"台北 · 台中",cap:"2024 暑期實習漏斗，長度照實際比例。",blocks:sec("ch4","找實習地獄",null)},
+ {id:"blackmores",plate:"shelf",title:"澳佳寶",sub:"碩二開始，把我操爆的實習。",excerpt:"「我不希望你把你自己當 Intern，我要你成為公司的戰力。」我當下是有點開心又害怕的。",date:"2024.08 – 2025.01",place:"台北 · 信義安和",cap:"康是美保健貨架：小瓶魚油站上壓克力展示架。",blocks:sec("ch5","把我操爆的澳佳寶實習","NTU DAC 台大資料分析與決策科學社")},
+ {id:"dac",plate:"dac",title:"NTU DAC",sub:"台大資料分析與決策科學社。",excerpt:"客戶是肯驛國際的「叫車吧」：在 2025 年 6 月前，提升既有會員平均再購次數 20%。",date:"2024.08 – 2025.01",place:"台北 · 公館",cap:"三個客群：商務客、獨旅客、團旅客。",blocks:sec("ch5","NTU DAC 台大資料分析與決策科學社","最後的找實習之路")},
+ {id:"last-search",plate:"wait",title:"最後的找實習之路",sub:"Deloitte、蝦皮、AGM，和那個情人節。",excerpt:"情人節那天，我開著螢幕錄影等一通 Offer Call，直到 3 點、4 點、5 點。",date:"2024.11 – 2025.02",place:"台北",cap:"2025.02.14，等一通電話的下午。",blocks:sec("ch5","最後的找實習之路",null)},
+ {...SRC.ch6,id:"micron"},
+ {id:"avento",plate:"avento",title:"AventoAI",sub:"與 Aiden 的創業之路。",excerpt:"與 Aiden 的創業之路。",date:"待寫",place:"創業",pending:true,cap:"這一章還沒寫。",blocks:TODO},
+ {...SRC.epilogue,id:"epilogue"},
+ {id:"military",plate:"military",title:"新兵日記",sub:"真的要好好想要講什麼。",excerpt:"真的要好好想要講什麼。",date:"待寫",place:"新訓",pending:true,cap:"這一章還沒寫。",blocks:TODO},
+ {id:"camino",plate:"camino",title:"Camino",sub:"我的朝聖之路。",excerpt:"我的朝聖之路。",date:"2026.04 – 05",place:"西班牙",pending:true,cap:"這一章還沒寫。",blocks:TODO}
+];
+const CH=ORDER.map((c,i)=>({...c,kind:undefined,no:String(i+1).padStart(2,"0"),tone:i%2?"dark":"light"}));
+const EXTRA=[{...SRC.reflection}];
+const ALL=[...CH,...EXTRA];
+
+/* ================= plates ================= */
+function rng(seed){return ()=>((seed=(seed*16807)%2147483647)-1)/2147483646}
+const SV = (inner)=>`<svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect class="s-bg" width="400" height="400"/>${inner}</svg>`;
+const PLATES = {
+ exam(){const R=rng(11);let s=`<text x="58" y="96" class="s-t">大碩 · 商管模擬考 · 答案卡</text><text x="342" y="100" text-anchor="end" class="s-big">07:00</text><line x1="58" y1="112" x2="342" y2="112" class="s-hair"/>`;
+  for(let r=0;r<8;r++){s+=`<text x="58" y="${146+r*22}" class="s-t">${String(r+1).padStart(2,"0")}</text>`;const pick=Math.floor(R()*4);for(let c=0;c<9;c++){const cx=96+c*28,cy=142+r*22;const f=(c%4===pick&&c<8)||R()<.08;s+=`<circle cx="${cx}" cy="${cy}" r="6.5" class="${f?"s-ink":"s-ring"}"/>`}}
+  s+=`<g transform="rotate(-8 286 318)"><rect x="236" y="300" width="104" height="34" class="s-accl"/><text x="288" y="322" text-anchor="middle" class="s-ta">備取 · 08.08</text></g>`;return SV(s)},
+ tree(){let s=`<text x="52" y="90" class="s-t">ISSUE TREE · IS IT MECE?</text>`;
+  s+=`<rect x="52" y="174" width="96" height="52" class="s-ink"/><text x="100" y="196" text-anchor="middle" class="s-ti">收購用戶數</text><text x="100" y="213" text-anchor="middle" class="s-ti">+120%</text>`;
+  const mids=[["獲客",110],["轉換",200],["留存",290]];const leaves=[["曝光","社群"],["試看","首購"],["完課","回購"]];
+  mids.forEach(([t,y],i)=>{const acc=i===1;s+=`<path d="M148 200 H166 V${y} H184" class="${acc?"s-accl":"s-line"}"/><rect x="184" y="${y-16}" width="72" height="32" class="${acc?"s-accl":"s-line"}"/><text x="220" y="${y+4}" text-anchor="middle" class="${acc?"s-ta":"s-tk"}">${t}</text>`;
+   leaves[i].forEach((l,j)=>{const ly=y+(j?17:-17);const a2=acc&&j===1;s+=`<path d="M256 ${y} H270 V${ly} H284" class="${a2?"s-accl":"s-hair"}"/><rect x="284" y="${ly-10}" width="62" height="20" class="${a2?"s-accl":"s-hair"}"/><text x="315" y="${ly+4}" text-anchor="middle" class="${a2?"s-ta":"s-t"}">${l}</text>`})});
+  s+=`<text x="52" y="330" class="s-t">WHY SO? → SO WHAT? → HYPOTHESIS</text>`;return SV(s)},
+ chain(){let s=`<text x="56" y="88" class="s-t">NCHU BLOCKCHAIN CLUB</text>`;
+  const B=[[56,104,"BLOCK 0","0x0000…","社課 1 人"],[160,176,"BLOCK 1","0x3f9a…","社課 30+"],[264,248,"BLOCK 3","0x9c2e…","第 4 屆"]];
+  B.forEach(([x,y,h,hs,v],i)=>{const acc=i===2;s+=`<rect x="${x}" y="${y}" width="84" height="76" class="${acc?"s-accl":"s-line"}"/><rect x="${x}" y="${y}" width="84" height="18" class="${acc?"s-acc":"s-ink"}"/><text x="${x+8}" y="${y+13}" class="s-ti">${h}</text><text x="${x+8}" y="${y+40}" class="s-t">${hs}</text><text x="${x+8}" y="${y+62}" class="s-tk">${v}</text>`;
+   if(i<2){s+=`<path d="M${x+84} ${y+38} H${x+126} V${y+72}" class="s-line"/><circle cx="${x+126}" cy="${y+72}" r="2.5" class="s-ink"/>`}});
+  s+=`<text x="56" y="330" class="s-t">2023.09 → 2026</text>`;return SV(s)},
+ funnel(){const rows=[["投遞",111],["初面",12],["決選",6],["Offer",3]];let s=`<text x="56" y="90" class="s-t">2024 暑期實習</text><text x="344" y="90" text-anchor="end" class="s-t">n = 111</text><line x1="56" y1="102" x2="344" y2="102" class="s-hair"/>`;
+  rows.forEach(([l,n],i)=>{const y=134+i*48,w=Math.max(2,288*n/111);s+=`<text x="56" y="${y-8}" class="s-t">${l}</text><text x="344" y="${y-8}" text-anchor="end" class="${i===3?"s-ta":"s-tk"}">${n}</text><rect x="56" y="${y}" width="288" height="18" class="s-d1"/><rect x="56" y="${y}" width="${w.toFixed(1)}" height="18" class="${i===3?"s-acc":"s-ink"}"/>`});
+  s+=`<text x="56" y="332" class="s-t">30+ 版 CV · 3 份作業 · 6 次北上</text>`;return SV(s)},
+ shelf(){let s=`<text x="52" y="86" class="s-t">康是美 · 保健貨架</text><text x="348" y="86" text-anchor="end" class="s-ta">POSM</text>`;
+  const top=[[60,30,86,"s-d3"],[98,26,72,"s-mute"],[130,32,94,"s-d2"],[170,28,80,"s-d3"],[204,26,68,"s-mute"],[300,32,84,"s-d2"]];
+  top.forEach(([x,w,h,c])=>{s+=`<rect x="${x}" y="${196-h}" width="${w}" height="${h}" class="${c}"/><rect x="${x+5}" y="${188-h}" width="${w-10}" height="8" class="s-mute"/>`});
+  s+=`<rect x="240" y="158" width="54" height="38" class="s-acr"/><rect x="254" y="112" width="26" height="46" class="s-ink"/><rect x="258" y="104" width="18" height="8" class="s-mute"/><rect x="258" y="128" width="18" height="12" class="s-bg"/>`;
+  s+=`<rect x="48" y="196" width="304" height="5" class="s-ink"/>`;
+  const bot=[[62,34,70,"s-d2"],[104,28,82,"s-mute"],[140,30,64,"s-d3"],[180,34,78,"s-d2"],[222,26,60,"s-mute"],[256,32,74,"s-d3"],[298,30,66,"s-d2"]];
+  bot.forEach(([x,w,h,c])=>{s+=`<rect x="${x}" y="${300-h}" width="${w}" height="${h}" class="${c}"/>`});
+  s+=`<rect x="48" y="300" width="304" height="5" class="s-ink"/><text x="52" y="330" class="s-t">NT$40,000 · 前 100 店 · Buyer 分攤一半</text>`;return SV(s)},
+ wafer(){const R=rng(29);let s=`<circle cx="200" cy="200" r="134" class="s-line"/>`;
+  for(let y=74;y<326;y+=18)for(let x=74;x<326;x+=18){if(Math.hypot(x+8-200,y+8-200)>122)continue;const v=R();s+=`<rect x="${x}" y="${y}" width="16" height="16" class="${v<.05?"s-acc":v<.35?"s-d1":v<.75?"s-d2":"s-d3"}"/>`}
+  s+=`<circle cx="200" cy="334" r="7" class="s-bg"/><text x="46" y="84" class="s-t">F16 · TOOL LOADING</text><text x="354" y="330" text-anchor="end" class="s-ta">▲ POR</text>`;return SV(s)},
+ timeline(){const pts=[[60,"2022","考研"],[153,"2023","中興 · CG"],[247,"2024","PwC · 澳佳寶"],[340,"2025","美光 · 畢業"]];let s=`<text x="60" y="140" class="s-big">2 年</text><line x1="60" y1="220" x2="340" y2="220" class="s-line"/>`;
+  pts.forEach(([x,y,l],i)=>{s+=`<line x1="${x}" y1="212" x2="${x}" y2="228" class="s-line"/><text x="${x}" y="250" text-anchor="${i===0?"start":i===3?"end":"middle"}" class="s-tk">${y}</text><text x="${x}" y="${i%2?186:200}" text-anchor="${i===0?"start":i===3?"end":"middle"}" class="${i===3?"s-ta":"s-t"}">${l}</text>`});
+  s+=`<circle cx="340" cy="220" r="5" class="s-acc"/>`;return SV(s)},
+ pwc(){return SV(`<text x="56" y="88" class="s-t">2023.12.28 · 中興小窩</text><rect x="140" y="104" width="120" height="212" rx="16" class="s-line"/><rect x="182" y="114" width="36" height="5" rx="2.5" class="s-mute"/><text x="200" y="160" text-anchor="middle" class="s-t">02 · 來電</text><text x="200" y="200" text-anchor="middle" class="s-big">資誠</text><text x="200" y="222" text-anchor="middle" class="s-t">Whoscall</text><circle cx="172" cy="278" r="13" class="s-mute"/><circle cx="228" cy="278" r="13" class="s-acc"/><text x="344" y="332" text-anchor="end" class="s-ta">OFFER #1</text>`)},
+ dac(){const R=rng(5);let s=`<line x1="70" y1="318" x2="340" y2="318" class="s-line"/><line x1="70" y1="96" x2="70" y2="318" class="s-line"/><text x="76" y="92" class="s-t">折扣使用 ↑</text><text x="340" y="334" text-anchor="end" class="s-t">服務使用 →</text>`;
+  [[130,250,"商務客",0],[218,160,"獨旅客",1],[290,250,"團旅客",0]].forEach(([cx,cy,l,a])=>{for(let k=0;k<16;k++){const r=R()*30,t=R()*6.283;s+=`<circle cx="${(cx+r*Math.cos(t)).toFixed(1)}" cy="${(cy+r*Math.sin(t)).toFixed(1)}" r="3.6" class="${a?"s-acc":"s-ink"}"/>`}s+=`<text x="${cx}" y="${cy+50}" text-anchor="middle" class="${a?"s-ta":"s-tk"}">${l}</text>`});return SV(s)},
+ wait(){let s=`<text x="62" y="88" class="s-t">02.14 · 星期五</text><text x="338" y="88" text-anchor="end" class="s-ta">● REC</text>`;
+  ["13:00","14:00","15:00","16:00","17:00","18:00"].forEach((t,i)=>{const y=126+i*38;s+=`<text x="62" y="${y+4}" class="${i===5?"s-tk":"s-t"}">${t}</text><line x1="112" y1="${y}" x2="314" y2="${y}" class="s-hair"/><circle cx="326" cy="${y}" r="6" class="s-ring"/>`});
+  s+=`<text x="112" y="${126+5*38+22}" class="s-t">大埔鐵板燒 · 未接來電 0</text>`;return SV(s)},
+ avento(){let s=`<text x="60" y="88" class="s-t">AVENTOAI</text>`;for(let k=0;k<7;k++){const t=k/7*6.283-1.2,x=200+104*Math.cos(t),y=206+104*Math.sin(t);s+=`<line x1="200" y1="206" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" class="${k===2?"s-accl":"s-hair"}"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" class="${k===2?"s-acc":"s-ring"}"/>`}
+  s+=`<circle cx="200" cy="206" r="24" class="s-ink"/><text x="340" y="334" text-anchor="end" class="s-t">待寫</text>`;return SV(s)},
+ military(){let s=`<text x="80" y="92" class="s-t">新兵日記</text>`;for(let r=0;r<6;r++)for(let c=0;c<7;c++){const k=r*7+c,x=80+c*35,y=108+r*35;s+=`<rect x="${x}" y="${y}" width="27" height="27" class="${k<9?"s-d3":"s-ring"}"/>`;if(k<9)s+=`<path d="M${x+6} ${y+6} L${x+21} ${y+21} M${x+21} ${y+6} L${x+6} ${y+21}" stroke="var(--pl-bg)" stroke-width="1.6"/>`}
+  s+=`<text x="80" y="334" class="s-ta">D+9</text>`;return SV(s)},
+ camino(){let s=`<text x="62" y="92" class="s-t">CAMINO FRANCÉS</text>`;const cx=200,cy=300,R=128;
+  for(let k=0;k<=8;k++){const t=(20+k*17.5)*Math.PI/180;s+=`<line x1="${cx}" y1="${cy}" x2="${(cx+R*Math.cos(t)).toFixed(1)}" y2="${(cy-R*Math.sin(t)).toFixed(1)}" class="${k===4?"s-accl":"s-line"}"/>`}
+  s+=`<path d="M${(cx+R*Math.cos(.349)).toFixed(1)} ${(cy-R*Math.sin(.349)).toFixed(1)} A${R} ${R} 0 0 0 ${(cx-R*Math.cos(.349)).toFixed(1)} ${(cy-R*Math.sin(.349)).toFixed(1)}" class="s-line"/><text x="338" y="334" text-anchor="end" class="s-ta">→ SANTIAGO</text>`;return SV(s)},
+ judge(){return SV(`<text x="200" y="214" text-anchor="middle" class="s-huge">判斷力</text><line x1="120" y1="240" x2="280" y2="240" class="s-hair"/><text x="200" y="266" text-anchor="middle" class="s-t">努力 ≠ 成功</text><text x="62" y="96" class="s-t">加碼反思 · DRAFT</text>`)}
+};
+
+/* ================= helpers ================= */
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const DATE_RE=/^(\d{4}年\d{1,2}月\d{1,2}[日號]?|\d{4}年\d{1,2}月|\d{1,2}月\d{1,2}[日號]?|\d{1,2}\/\d{1,2}|[一二三四五六七八九十]+月)(?=[，,\s])/;
+const charsOf=ch=>ch.blocks.join("").length;
+const minutes=ch=>Math.max(1,Math.round(charsOf(ch)/420));
+const reduced=()=>matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function blockHTML(b){
+ if(b.startsWith("h:"))return `<h2>${esc(b.slice(2))}</h2>`;
+ if(b.startsWith("q:"))return `<blockquote class="pq"><p>${esc(b.slice(2))}</p></blockquote>`;
+ if(b.startsWith("l:"))return `<ol>${b.slice(2).split("|").map(i=>`<li>${esc(i)}</li>`).join("")}</ol>`;
+ if(b.startsWith("n:"))return `<aside class="note"><span>作者備註</span>${esc(b.slice(2))}</aside>`;
+ const t=esc(b);const m=t.match(DATE_RE);
+ return m?`<p><span class="d">${m[1]}</span>${t.slice(m[1].length).replace(/^[，,]\s*/,"")}</p>`:`<p>${t}</p>`;
+}
+
+/* ================= build overview ================= */
+const N=CH.length,H=680,CW_MAX=220,CW_MIN=128,IDX=N+1;
+let W=[],BASE=[],POP=.16;
+const fold=$("#fold"),floorEl=$("#floor"),stage=$("#stage"),reader=$("#reader"),rinner=$("#rinner"),expander=$("#expander"),ghost=$("#ghost"),cursor=$("#cursor");
+const panels=[];
+
+function mk(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+
+// cover
+{const p=mk("section","panel tone cover");p.dataset.tone="light";
+ p.innerHTML=`<div class="shade"></div><h1 class="name">Andy<br>Sung</h1><div class="foot"><span>手札</span><span>${N} 章</span></div>`;
+ panels.push(p)}
+// chapters
+CH.forEach((c,i)=>{const p=mk("section","panel tone chapter");p.dataset.tone=c.tone;p.dataset.id=c.id;p.tabIndex=0;p.setAttribute("role","button");p.setAttribute("aria-label",`閱讀第 ${c.no} 章：${c.title}`);
+ p.innerHTML=`<div class="shade"></div><div class="zone-top"><span class="badge">Chapter ${c.no}</span><div class="plate-slot"><div class="plate">${PLATES[c.plate]()}</div></div></div><div class="zone-bottom"><h3>${c.title}</h3><p>${c.excerpt}</p><div class="pmeta"><span>${c.pending?c.place:c.place+" · "+c.date.slice(0,4)}</span><span${c.pending?' class="tag-pending"':""}>${c.pending?"待寫":`約 ${minutes(c)} 分鐘`}</span></div></div>`;
+ panels.push(p)});
+// index
+{const p=mk("section","panel tone index");p.dataset.tone="light";
+ const row=(id,n,t,r,pend)=>`<li><button class="trow" data-open="${id}"><span class="tn">${n}</span><span class="tt">${t}</span><span class="tr${pend?" tag-pending":""}">${r}</span></button></li>`;
+ const items=CH.map(c=>row(c.id,c.no,c.title,c.pending?"待寫":c.date.slice(0,7),c.pending)).join("")+EXTRA.map(e=>row(e.id,"—",e.title,"草稿")).join("");
+ p.innerHTML=`<div class="shade"></div><div class="ihead"><h2>Index</h2><span>${N} 章 · ${CH.filter(c=>c.pending).length} 篇待寫</span></div><ul class="ilist">${items}</ul><div class="ifoot">最後更新 2026.10</div>`;
+ panels.push(p)}
+panels.forEach(p=>fold.appendChild(p));
+
+/* ================= 3D layout + spring ================= */
+/* chapter folds narrow automatically as chapters are added; the whole brochure is scaled to fit */
+function geom(){const rad=d=>d*Math.PI/180;const fixed=340*Math.cos(rad(12))+300*Math.cos(rad(14));
+ const cw=Math.round(Math.max(CW_MIN,Math.min(CW_MAX,((innerWidth-48)/0.72-fixed)/(N*Math.cos(rad(34))))));
+ W=[340,...Array(N).fill(cw),300];BASE=[12,...Array.from({length:N},(_,i)=>i%2?34:-34),-14];
+ fold.classList.toggle("narrow",cw<180);return cw}
+let CW=geom();
+let cur=BASE.slice(),tgt=BASE.slice(),pop=Array(N+2).fill(0),popT=Array(N+2).fill(0),hot=-1,stack=false,reading=false,scale=1;
+const tilt={x:0,y:0,tx:0,ty:0};
+function layout(ang){let x=0,z=0,zmin=0,zmax=0;const pos=[];for(let i=0;i<ang.length;i++){pos.push([x,z]);const r=ang[i]*Math.PI/180;x+=W[i]*Math.cos(r);z-=W[i]*Math.sin(r);zmin=Math.min(zmin,z);zmax=Math.max(zmax,z)}return{pos,X:x,cz:(zmin+zmax)/2}}
+function apply(){const L=layout(cur);const s34=Math.sin(34*Math.PI/180);
+ panels.forEach((p,i)=>{const [x,z]=L.pos[i];const pp=pop[i],hw=W[i]/2;
+  p.style.transform=`translate3d(${(x-L.X/2).toFixed(2)}px,${-H/2}px,${(z-L.cz).toFixed(2)}px) rotateY(${cur[i].toFixed(2)}deg)`+
+   (pp>.001?` translateX(${hw}px) translateZ(${(pp*80).toFixed(1)}px) scale(${(1+pp*POP).toFixed(4)}) translateX(${-hw}px)`:"");
+  let sh=Math.max(0,Math.sin(cur[i]*Math.PI/180)/s34);if(i===0||i===IDX)sh*=.35;sh*=1-pp*.7;p.firstElementChild.style.opacity=sh.toFixed(3)});
+ fold.style.transform=`rotateX(${tilt.x.toFixed(2)}deg) rotateY(${tilt.y.toFixed(2)}deg) scale3d(${scale},${scale},${scale})`}
+function resize(){stack=innerWidth<768;document.documentElement.classList.toggle("is-stack",stack);
+ if(stack){panels.forEach(p=>{p.style.transform="";p.style.width="";p.style.height=""});fold.style.transform="";return}
+ CW=geom();cur=BASE.map((b,i)=>hot===i?cur[i]:b);setHot(hot);
+ panels.forEach((p,i)=>{p.style.width=W[i]+"px";p.style.height=H+"px"});
+ const X=layout(BASE).X;scale=Math.min(1,(innerWidth-48)/(X+24),(innerHeight-120)/(H*1.08));
+ /* hovered fold grows until it reads at roughly 250px wide on screen */
+ POP=Math.max(.1,Math.min(1.2,(innerHeight-40)/(H*scale)-1,Math.max(.14,250/(CW*scale)-1)));
+ floorEl.style.width=(X*scale*.95)+"px";floorEl.style.top=`calc(48% + ${H*scale/2-30}px)`;apply()}
+function setHot(i){hot=i;for(let j=1;j<=N;j++){const sign=Math.sign(BASE[j]);tgt[j]=j===i?sign*8:(i>0&&Math.abs(j-i)===1)?sign*26:BASE[j];popT[j]=j===i?1:0}
+ panels.forEach((p,j)=>p.classList.toggle("is-hot",j===i))}
+function tick(){if(!stack&&!reading){const k=reduced()?1:.12;let moving=false;
+  for(let i=0;i<cur.length;i++){const d=tgt[i]-cur[i];if(Math.abs(d)>.01){cur[i]+=d*k;moving=true}
+   const dp=popT[i]-pop[i];if(Math.abs(dp)>.001){pop[i]+=dp*(reduced()?1:.16);moving=true}}
+  tilt.x+=(tilt.tx-tilt.x)*.06;tilt.y+=(tilt.ty-tilt.y)*.06;apply()}
+ requestAnimationFrame(tick)}
+
+panels.forEach((p,i)=>{if(i<1||i>N)return;
+ p.addEventListener("pointerenter",e=>{if(stack)return;setHot(i);if(e.pointerType==="mouse")cursor.classList.add("on")});
+ p.addEventListener("pointerleave",()=>{setHot(-1);cursor.classList.remove("on")});
+ p.addEventListener("click",()=>openChapter(CH[i-1].id,p));
+ p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openChapter(CH[i-1].id,p)}});
+});
+panels[IDX].querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();openChapter(b.dataset.open,panels[IDX])}));
+addEventListener("pointermove",e=>{cursor.style.transform=`translate(${e.clientX+14}px,${e.clientY+14}px)`;
+ if(!reduced()){tilt.ty=(e.clientX/innerWidth-.5)*5;tilt.tx=-(e.clientY/innerHeight-.5)*3}});
+addEventListener("resize",resize);
+
+/* ================= reader ================= */
+function panelFor(id){const i=CH.findIndex(c=>c.id===id);return i>=0?panels[i+1]:panels[IDX]}
+function renderReader(ch){const i=ALL.indexOf(ch),prev=ALL[i-1],next=ALL[i+1];
+ const label=ch.no?`Chapter ${ch.no}`:ch.kind;
+ reader.dataset.tone=ch.tone;$("#rno").textContent=label;$("#rtitle").textContent=ch.title;
+ rinner.innerHTML=`<header class="rhero"><p class="eyebrow">${label} · ${ch.place}</p><h1 id="rh1">${ch.title}</h1><p class="sub">${ch.sub}</p><p class="meta"><span>${ch.date}</span>${ch.pending?"<span>待寫</span>":`<span>約 ${minutes(ch)} 分鐘</span><span>${charsOf(ch).toLocaleString()} 字</span>`}</p></header>
+ <figure style="margin:0"><div class="hero-plate">${PLATES[ch.plate]()}</div><figcaption class="hero-cap">${ch.cap}</figcaption></figure>
+ <div class="body">${ch.blocks.map(blockHTML).join("")}</div>
+ <nav class="pn" aria-label="章節導覽">
+  <button class="pncard prev" ${prev?`data-go="${prev.id}"`:"disabled"}><span>← 上一章</span><b>${prev?prev.title:""}</b></button>
+  <button class="pncard next" ${next?`data-go="${next.id}"`:"disabled"}><span>下一章 →</span><b>${next?next.title:""}</b></button>
+  <button class="collapse" data-close>折回目錄</button>
+ </nav>`;
+ rinner.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>goTo(b.dataset.go)));
+ rinner.querySelector("[data-close]").addEventListener("click",closeReader);
+ $("#bar").style.width="0";
+}
+let current=null,busy=false;
+const EASE="cubic-bezier(.76,0,.24,1)",DUR=680;
+function rectInset(r){return `inset(${r.top}px ${innerWidth-r.right}px ${innerHeight-r.bottom}px ${r.left}px)`}
+async function openChapter(id,fromEl){if(busy)return;const ch=ALL.find(c=>c.id===id);if(!ch)return;busy=true;current=id;
+ setHot(-1);cursor.classList.remove("on");reading=true;
+ renderReader(ch);reader.scrollTop=0;
+ try{history.replaceState(null,"","#"+id)}catch(e){}
+ if(reduced()||!fromEl){reader.hidden=false;stage.inert=true;stage.style.visibility="hidden";busy=false;reader.focus?.();return}
+ const r=fromEl.getBoundingClientRect();const src=fromEl.querySelector(".plate")||null;
+ reader.classList.add("entering");reader.hidden=false;
+ expander.dataset.tone=ch.tone;ghost.dataset.tone=ch.tone;expander.hidden=false;
+ const a1=expander.animate([{clipPath:rectInset(r)},{clipPath:"inset(0px 0px 0px 0px)"}],{duration:DUR,easing:EASE,fill:"forwards"});
+ const dst=reader.querySelector(".hero-plate");
+ if(src&&dst){const a=src.getBoundingClientRect(),b=dst.getBoundingClientRect();ghost.innerHTML=dst.innerHTML;ghost.hidden=false;
+  ghost.animate([{left:a.left+"px",top:a.top+"px",width:a.width+"px",height:a.height+"px"},{left:b.left+"px",top:b.top+"px",width:b.width+"px",height:b.height+"px"}],{duration:DUR,easing:EASE,fill:"forwards"})}
+ stage.animate([{opacity:1,transform:"scale(1)"},{opacity:0,transform:"scale(1.05)"}],{duration:DUR*.8,easing:EASE,fill:"forwards"});
+ await a1.finished;
+ reader.classList.remove("entering");
+ requestAnimationFrame(()=>{ghost.hidden=true;ghost.getAnimations().forEach(x=>x.cancel());expander.hidden=true;a1.cancel()});
+ stage.inert=true;busy=false;reader.focus?.();
+}
+async function closeReader(){if(busy||reader.hidden)return;busy=true;
+ const el=panelFor(current);const ch=ALL.find(c=>c.id===current);
+ stage.getAnimations().forEach(a=>a.cancel());stage.style.visibility="";stage.inert=false;reading=false;
+ try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
+ if(reduced()){reader.hidden=true;busy=false;el.focus?.();return}
+ if(stack)el.scrollIntoView({block:"center"});
+ stage.style.opacity="0";apply();
+ const r=el.getBoundingClientRect();
+ expander.dataset.tone=ch.tone;expander.hidden=false;reader.hidden=true;
+ const a1=expander.animate([{clipPath:"inset(0px 0px 0px 0px)"},{clipPath:rectInset(r)}],{duration:DUR*.85,easing:EASE,fill:"forwards"});
+ const a2=stage.animate([{opacity:0,transform:"scale(1.05)"},{opacity:1,transform:"scale(1)"}],{duration:DUR*.85,easing:EASE});
+ stage.style.opacity="";
+ await a1.finished;expander.animate([{opacity:1},{opacity:0}],{duration:180}).finished.then(()=>{expander.hidden=true;a1.cancel()});
+ busy=false;el.focus?.({preventScroll:true});
+}
+async function goTo(id){const ch=ALL.find(c=>c.id===id);if(!ch)return;current=id;
+ if(!reduced())await rinner.animate([{opacity:1},{opacity:0}],{duration:160,fill:"forwards"}).finished;
+ renderReader(ch);reader.scrollTop=0;try{history.replaceState(null,"","#"+id)}catch(e){}
+ rinner.getAnimations().forEach(a=>a.cancel());if(!reduced())rinner.animate([{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:380,easing:"ease-out"})}
+$("#back").addEventListener("click",closeReader);
+reader.tabIndex=-1;
+reader.addEventListener("scroll",()=>{const m=reader.scrollHeight-reader.clientHeight;$("#bar").style.width=(m>0?reader.scrollTop/m*100:0)+"%"},{passive:true});
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!reader.hidden)closeReader()});
+
+resize();requestAnimationFrame(tick);
+const h=location.hash.slice(1);if(ALL.some(c=>c.id===h))openChapter(h,null);
+</script>
+
+</body>
+</html>
