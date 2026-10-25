@@ -44,14 +44,17 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 /* ---------- overview stage ---------- */
 .stage{position:fixed;inset:0;background:linear-gradient(to bottom,var(--studio-a),var(--studio-b));overflow:hidden}
 .scene{position:absolute;inset:0;perspective:2200px;perspective-origin:50% 45%}
-.fold{position:absolute;left:50%;top:48%;width:0;height:0;transform-style:preserve-3d}
-.floor{position:absolute;left:50%;transform:translateX(-50%);height:90px;background:radial-gradient(ellipse at center,var(--floor),transparent 68%);pointer-events:none;filter:blur(6px)}
+.fold{z-index:1;position:absolute;left:50%;top:48%;width:0;height:0;transform-style:preserve-3d}
+.floor{z-index:0;position:absolute;left:50%;transform:translateX(-50%);height:90px;background:radial-gradient(ellipse at center,var(--floor),transparent 68%);pointer-events:none;filter:blur(6px)}
 .hint{position:absolute;left:0;right:0;bottom:max(18px,env(safe-area-inset-bottom,0px));text-align:center;font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--hint)}
 
 .panel{position:absolute;left:0;top:0;transform-origin:0 50%;backface-visibility:hidden;background:var(--p-bg);color:var(--p-ink);display:flex;flex-direction:column;overflow:hidden;box-shadow:inset 1px 0 0 var(--crease)}
 .shade{position:absolute;inset:0;background:var(--shade);pointer-events:none;z-index:3;opacity:0}
-.panel.chapter{cursor:none}
-@media (hover:none){.panel.chapter{cursor:pointer}}
+.stage{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.stage.dragging{cursor:grabbing}
+.panel{cursor:pointer}
+.panel img,.panel svg{pointer-events:none}
+@media (hover:none){.cursor{display:none}}
 
 .cover{padding:40px 34px 34px}
 .cover .name{font:800 92px/.86 var(--display);font-stretch:68%;letter-spacing:-.025em;margin:0}
@@ -61,12 +64,12 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 
 .zone-top{height:55%;padding:16px 16px 0;display:flex;flex-direction:column;position:relative}
 .badge{align-self:flex-start;font:500 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--p-line);padding:4px 6px;color:var(--p-mute)}
-.plate-slot{flex:1;display:flex;align-items:center}
-.plate{width:100%;aspect-ratio:3/4;max-width:100%;background:var(--pl-bg);box-shadow:0 2px 4px rgba(0,0,0,.08),0 10px 22px -10px rgba(0,0,0,.28);transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;overflow:hidden}
+.plate-slot{flex:1;display:flex;min-height:0}
+.plate{width:100%;height:calc(100% - 14px);margin-top:14px;max-width:100%;background:var(--pl-bg);box-shadow:0 2px 4px rgba(0,0,0,.08),0 10px 22px -10px rgba(0,0,0,.28);transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s;overflow:hidden}
 .plate svg,.hero-plate svg,.ghost svg{display:block;width:100%;height:100%}
-.panel.is-hot .plate{transform:translateY(-6px);box-shadow:0 4px 8px rgba(0,0,0,.1),0 22px 34px -12px rgba(0,0,0,.38)}
+.panel.is-focus .plate{transform:translateY(-6px);box-shadow:0 4px 8px rgba(0,0,0,.1),0 22px 34px -12px rgba(0,0,0,.38)}
 .zone-bottom{height:45%;padding:22px 16px 16px;display:flex;flex-direction:column}
-.zone-bottom h3{font:700 22px/1.3 var(--sans);letter-spacing:-.01em;margin:0 0 10px;text-wrap:balance}
+.zone-bottom h3{font:700 26px/1.3 var(--sans);letter-spacing:-.01em;margin:0 0 10px;text-wrap:balance}
 .zone-bottom p{font:400 13px/1.75 var(--sans);opacity:.75;margin:0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .fold.narrow .zone-top{padding:12px 12px 0}
 .fold.narrow .zone-bottom{padding:16px 12px 12px}
@@ -160,24 +163,10 @@ button.ient:hover b{text-decoration:underline;text-underline-offset:4px}
 .s-big{font:800 36px var(--display);font-stretch:68%;fill:var(--pl-ink)}
 .s-huge{font:900 66px var(--sans);fill:var(--pl-ink)}
 
-/* ---------- phone: stacked deck ---------- */
+/* ---------- phone ---------- */
 @media (max-width:767px){
-  body{overflow:auto}
-  .stage{overflow-y:auto}
-  .scene{position:static;perspective:none;padding-block:20px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-  .fold{position:static;transform:none!important;width:auto;height:auto;display:flex;flex-direction:column;gap:14px}
-  .panel{position:relative;transform:none!important;width:auto!important;height:auto!important;box-shadow:0 1px 2px rgba(0,0,0,.06),0 14px 30px -18px rgba(0,0,0,.35)}
-  .shade,.floor,.cursor{display:none}
-  .hint{position:static;padding:4px 0 24px}
   .cover{padding:28px 22px}
-  .cover .name{font-size:72px}
-  .cover .bio{margin-top:28px}
-  .zone-top,.zone-bottom{height:auto}
-  .zone-top{padding:16px 16px 0}
-  .plate{aspect-ratio:4/3;margin-top:12px}
-  .zone-bottom{padding:18px 16px 16px;gap:0}
-  .zone-bottom p{-webkit-line-clamp:3;margin-bottom:16px}
-  .index{padding:26px 20px}
+  .cover .name{font-size:68px}
   .rhead{grid-template-columns:auto minmax(0,1fr)}
   .rno{display:none}
   .rinner{padding-block:40px 72px}
@@ -194,7 +183,7 @@ button.ient:hover b{text-decoration:underline;text-underline-offset:4px}
   <div class="scene" id="scene">
     <div class="fold" id="fold"></div>
     <div class="floor" id="floor"></div>
-    <p class="hint">點選任一折頁閱讀 · Esc 折回</p>
+    <p class="hint">左右拖曳或捲動拉開 · 點攤平的章節閱讀</p>
   </div>
 </div>
 <div class="cursor" id="cursor" aria-hidden="true">閱讀這章 →</div>
@@ -477,8 +466,7 @@ function blockHTML(b){
 }
 
 /* ================= build overview ================= */
-const N=CH.length,H=680,CW_MAX=220,CW_MIN=128,IDX=N+1;
-let W=[],BASE=[],POP=.16;
+const N=CH.length,IDX=N+1,NP=N+2;
 const fold=$("#fold"),floorEl=$("#floor"),stage=$("#stage"),reader=$("#reader"),rinner=$("#rinner"),expander=$("#expander"),ghost=$("#ghost"),cursor=$("#cursor");
 const panels=[];
 
@@ -501,46 +489,60 @@ CH.forEach((c,i)=>{const p=mk("section","panel tone chapter");p.dataset.tone=c.t
 panels.forEach(p=>fold.appendChild(p));
 
 /* ================= 3D layout + spring ================= */
-/* chapter folds narrow automatically as chapters are added; the whole brochure is scaled to fit */
-function geom(){const rad=d=>d*Math.PI/180;const fixed=340*Math.cos(rad(12))+300*Math.cos(rad(14));
- const cw=Math.round(Math.max(CW_MIN,Math.min(CW_MAX,((innerWidth-48)/0.72-fixed)/(N*Math.cos(rad(34))))));
- W=[340,...Array(N).fill(cw),300];BASE=[12,...Array.from({length:N},(_,i)=>i%2?34:-34),-14];
- fold.classList.toggle("narrow",cw<180);return cw}
-let CW=geom();
-let cur=BASE.slice(),tgt=BASE.slice(),pop=Array(N+2).fill(0),popT=Array(N+2).fill(0),hot=-1,stack=false,reading=false,scale=1;
+/* ---- pull-open accordion: the fold at the centre lies flat, folds further away close up ---- */
+let H=640,W=[],focus=0,focusT=0,reading=false,dragging=false,moved=0;
+const stack=false,MAXA=74,SIGN=Array.from({length:NP},(_,i)=>i%2?1:-1);
 const tilt={x:0,y:0,tx:0,ty:0};
-function layout(ang){let x=0,z=0,zmin=0,zmax=0;const pos=[];for(let i=0;i<ang.length;i++){pos.push([x,z]);const r=ang[i]*Math.PI/180;x+=W[i]*Math.cos(r);z-=W[i]*Math.sin(r);zmin=Math.min(zmin,z);zmax=Math.max(zmax,z)}return{pos,X:x,cz:(zmin+zmax)/2}}
-function apply(){const L=layout(cur);const s34=Math.sin(34*Math.PI/180);
- panels.forEach((p,i)=>{const [x,z]=L.pos[i];const pp=pop[i],hw=W[i]/2;
-  p.style.transform=`translate3d(${(x-L.X/2).toFixed(2)}px,${-H/2}px,${(z-L.cz).toFixed(2)}px) rotateY(${cur[i].toFixed(2)}deg)`+
-   (pp>.001?` translateX(${hw}px) translateZ(${(pp*80).toFixed(1)}px) scale(${(1+pp*POP).toFixed(4)}) translateX(${-hw}px)`:"");
-  let sh=Math.max(0,Math.sin(cur[i]*Math.PI/180)/s34);if(i===0||i===IDX)sh*=.35;sh*=1-pp*.7;p.firstElementChild.style.opacity=sh.toFixed(3)});
- fold.style.transform=`rotateX(${tilt.x.toFixed(2)}deg) rotateY(${tilt.y.toFixed(2)}deg) scale3d(${scale},${scale},${scale})`}
-function resize(){stack=innerWidth<768;document.documentElement.classList.toggle("is-stack",stack);
- if(stack){panels.forEach(p=>{p.style.transform="";p.style.width="";p.style.height=""});fold.style.transform="";return}
- CW=geom();cur=BASE.map((b,i)=>hot===i?cur[i]:b);setHot(hot);
+const clampF=v=>Math.max(0,Math.min(NP-1,v));
+function geom(){H=Math.round(Math.min(640,Math.max(440,innerHeight*.76)));
+ const cw=Math.round(Math.min(H*.68,innerWidth*.82));
+ W=[Math.round(Math.min(H*.84,innerWidth*.86)),...Array(N).fill(cw),cw];
  panels.forEach((p,i)=>{p.style.width=W[i]+"px";p.style.height=H+"px"});
- const X=layout(BASE).X;scale=Math.min(1,(innerWidth-48)/(X+24),(innerHeight-120)/(H*1.08));
- /* hovered fold grows until it reads at roughly 250px wide on screen */
- POP=Math.max(.1,Math.min(1.2,(innerHeight-40)/(H*scale)-1,Math.max(.14,250/(CW*scale)-1)));
- floorEl.style.width=(X*scale*.95)+"px";floorEl.style.top=`calc(48% + ${H*scale/2-30}px)`;apply()}
-function setHot(i){hot=i;for(let j=1;j<=N;j++){const sign=Math.sign(BASE[j]);tgt[j]=j===i?sign*8:(i>0&&Math.abs(j-i)===1)?sign*26:BASE[j];popT[j]=j===i?1:0}
- panels.forEach((p,j)=>p.classList.toggle("is-hot",j===i))}
-function tick(){if(!stack&&!reading){const k=reduced()?1:.12;let moving=false;
-  for(let i=0;i<cur.length;i++){const d=tgt[i]-cur[i];if(Math.abs(d)>.01){cur[i]+=d*k;moving=true}
-   const dp=popT[i]-pop[i];if(Math.abs(dp)>.001){pop[i]+=dp*(reduced()?1:.16);moving=true}}
+ floorEl.style.width=Math.min(innerWidth*1.1,1700)+"px";floorEl.style.top=`calc(48% + ${H/2-34}px)`}
+function angleAt(i,f){const t=Math.min(1,Math.max(0,(Math.abs(i-f)-.55)/1.15));return SIGN[i]*MAXA*t*t*(3-2*t)}
+function apply(){const ang=panels.map((_,i)=>angleAt(i,focus));
+ const pos=[];let x=0,z=0;for(let i=0;i<NP;i++){pos.push([x,z]);const r=ang[i]*Math.PI/180;x+=W[i]*Math.cos(r);z-=W[i]*Math.sin(r)}pos.push([x,z]);
+ const u=Math.min(NP-.0001,focus+.5),k=Math.floor(u),fr=u-k;
+ const cx=pos[k][0]+(pos[k+1][0]-pos[k][0])*fr,cz=pos[k][1]+(pos[k+1][1]-pos[k][1])*fr;
+ const sMax=Math.sin(MAXA*Math.PI/180);
+ panels.forEach((p,i)=>{const [px,pz]=pos[i];
+  p.style.transform=`translate3d(${(px-cx).toFixed(2)}px,${-H/2}px,${(pz-cz).toFixed(2)}px) rotateY(${ang[i].toFixed(2)}deg)`;
+  p.firstElementChild.style.opacity=(Math.max(0,Math.sin(ang[i]*Math.PI/180)/sMax)*.9).toFixed(3);
+  p.classList.toggle("is-focus",Math.abs(i-focus)<.5)});
+ fold.style.transform=`rotateX(${tilt.x.toFixed(2)}deg) rotateY(${tilt.y.toFixed(2)}deg)`}
+function setHot(){}
+function tick(){if(!reading){const d=focusT-focus;focus=Math.abs(d)<.0005||reduced()?focusT:focus+d*.14;
   tilt.x+=(tilt.tx-tilt.x)*.06;tilt.y+=(tilt.ty-tilt.y)*.06;apply()}
  requestAnimationFrame(tick)}
 
-panels.forEach((p,i)=>{if(i<1||i>N)return;
- p.addEventListener("pointerenter",e=>{if(stack)return;setHot(i);if(e.pointerType==="mouse")cursor.classList.add("on")});
- p.addEventListener("pointerleave",()=>{setHot(-1);cursor.classList.remove("on")});
- p.addEventListener("click",()=>openChapter(CH[i-1].id,p));
- p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openChapter(CH[i-1].id,p)}});
+/* wheel / trackpad */
+let snapT=0;
+stage.addEventListener("wheel",e=>{if(reading)return;e.preventDefault();
+ let d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;if(e.deltaMode===1)d*=16;
+ focusT=clampF(focusT+d/(W[1]*.8));clearTimeout(snapT);snapT=setTimeout(()=>{focusT=Math.round(focusT)},160)},{passive:false});
+/* drag */
+let dragX=0,dragF=0;
+stage.addEventListener("pointerdown",e=>{if(reading||e.button>0)return;dragging=true;moved=0;dragX=e.clientX;dragF=focusT;stage.classList.add("dragging")});
+addEventListener("pointermove",e=>{
+ if(dragging){const dx=e.clientX-dragX;moved=Math.max(moved,Math.abs(dx));focusT=clampF(dragF-dx/(W[1]*.7))}
+ cursor.style.transform=`translate(${e.clientX+14}px,${e.clientY+14}px)`;
+ const p=e.target.closest&&e.target.closest(".panel"),i=panels.indexOf(p);
+ let label="";if(!reading&&e.pointerType==="mouse"&&i>=0){if(dragging)label="";else if(Math.abs(i-focus)>=.5)label="展開這頁";else if(i>=1&&i<=N)label="閱讀這章 →"}
+ if(label)cursor.textContent=label;cursor.classList.toggle("on",!!label);
+ if(!reduced()){tilt.ty=(e.clientX/innerWidth-.5)*4;tilt.tx=-(e.clientY/innerHeight-.5)*2.5}});
+const endDrag=()=>{if(!dragging)return;dragging=false;stage.classList.remove("dragging");focusT=Math.round(focusT)};
+addEventListener("pointerup",endDrag);addEventListener("pointercancel",endDrag);
+/* click: unfold a closed page, open a page that is already flat */
+panels.forEach((p,i)=>{
+ p.addEventListener("click",e=>{if(moved>6)return;
+  if(Math.abs(i-focusT)>=.5){focusT=i;return}
+  if(i>=1&&i<=N)openChapter(CH[i-1].id,p)});
+ if(i>=1&&i<=N)p.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();focusT=i;openChapter(CH[i-1].id,p)}});
+ p.addEventListener("focus",()=>{if(!reading)focusT=i});
 });
-panels[IDX].querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();openChapter(b.dataset.open,panels[IDX])}));
-addEventListener("pointermove",e=>{cursor.style.transform=`translate(${e.clientX+14}px,${e.clientY+14}px)`;
- if(!reduced()){tilt.ty=(e.clientX/innerWidth-.5)*5;tilt.tx=-(e.clientY/innerHeight-.5)*3}});
+panels[IDX].querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();if(moved>6)return;if(Math.abs(IDX-focusT)>=.5){focusT=IDX;return}openChapter(b.dataset.open,panels[IDX])}));
+addEventListener("keydown",e=>{if(reading)return;if(e.key==="ArrowRight")focusT=clampF(Math.round(focusT)+1);if(e.key==="ArrowLeft")focusT=clampF(Math.round(focusT)-1)});
+function resize(){geom();apply()}
 addEventListener("resize",resize);
 
 /* ================= reader ================= */
@@ -586,7 +588,7 @@ async function closeReader(){if(busy||reader.hidden)return;busy=true;
  stage.getAnimations().forEach(a=>a.cancel());stage.style.visibility="";stage.inert=false;reading=false;
  try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}
  if(reduced()){reader.hidden=true;busy=false;el.focus?.();return}
- if(stack)el.scrollIntoView({block:"center"});
+ {const pi=panels.indexOf(el);if(pi>0&&pi<=N){focus=focusT=pi}}
  stage.style.opacity="0";apply();
  const r=el.getBoundingClientRect();
  expander.dataset.tone=ch.tone;expander.hidden=false;reader.hidden=true;
@@ -606,6 +608,7 @@ reader.addEventListener("scroll",()=>{const m=reader.scrollHeight-reader.clientH
 addEventListener("keydown",e=>{if(e.key==="Escape"&&!reader.hidden)closeReader()});
 
 resize();requestAnimationFrame(tick);
+{const i=CH.findIndex(c=>c.id===location.hash.slice(1));if(i>=0)focus=focusT=i+1}
 const h=location.hash.slice(1);if(ALL.some(c=>c.id===h))openChapter(h,null);
 </script>
 
